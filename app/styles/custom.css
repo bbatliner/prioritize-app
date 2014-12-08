@@ -6,6 +6,14 @@ body {
 	border-color: #d9d9d9;
 }
 
+.icon-logo {
+	position: relative;
+	top: 7px;
+}
+.icon-logo:before {
+	content: url('/favicon-32x32.png');;
+}
+
 .jumbotron-small {
 	padding: 12px 5px;
 	background-color: #eee;
