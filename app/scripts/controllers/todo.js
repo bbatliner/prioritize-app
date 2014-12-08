@@ -103,7 +103,6 @@ angular.module('myTodoAngularApp')
 		// Register callback for saving todos when they change
 		$scope.$watch('todos.length', function () {
 			saveTodos();
-			console.log('done!');
 		});
 
 		/* * * END INITIALIZATION CODE * * */
