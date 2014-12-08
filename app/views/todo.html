@@ -69,19 +69,17 @@
 		{{ todo.description }}
 
 		<!-- Date badge -->
-		<span class="badge todo-badge pull-right" style="width:85px">
-			{{ todo.duedate | date:'dd MMM yyyy' }}
+		<span class="badge todo-badge pull-right" style="width:80px">
+			{{ getDateString(todo.duedate) }}
 		</span>
 
 		<!-- Priority badge -->
-		<span class="badge todo-badge pull-right" ng-class="
-					  {{todo.priority}} === 1 ? 'bg-red'
-					: {{todo.priority}} === 2 ? 'bg-green'
-					: {{todo.priority}} === 3 ? 'bg-blue'
-					: 'bg-DNE'">
+		<span class="badge todo-badge pull-right" ng-class="priorityColorClass(todo.priority)">
 			{{ todo.priority }}
 		</span>
 
 	</div>
 </div>
+
+<!--  -->
 

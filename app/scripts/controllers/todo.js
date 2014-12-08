@@ -145,6 +145,32 @@ angular.module('myTodoAngularApp')
 			}
 		};
 
+		// Compare (ISO-8601) dates
+		$scope.getDateString = function(date) {
+			// If the date is anytime today, return 'Today'
+			if (Date.today().equals(Date.parse(date).at('0:00'))) {
+				return 'Today';
+			}
+			// If the date is anytime 'tomorrow', return 'Tomorrow'
+			else if (Date.parse('tomorrow').equals(Date.parse(date).at('0:00'))) {
+				return 'Tomorrow';
+			}
+			// Otherwise return a formatted date string
+			else {
+				console.log('Sometime else!');
+				return Date.parse(date).toString('d MMM yy');
+			}
+		};
+
+		// Get correct color class of priority
+		$scope.priorityColorClass = function(priority) {
+			priority = parseInt(priority);
+			return  priority === 1 ? 'bg-red'
+					: priority === 2 ? 'bg-green'
+					: priority === 3 ? 'bg-blue'
+					: '';
+		};
+
 		/* * * END CONTROLLER FUNCTIONS * * */
 
 	}]);
