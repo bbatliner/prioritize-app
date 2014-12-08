@@ -40,6 +40,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "postinstall": "./node_modules/grunt-cli/bin/grunt build",
     "test": "grunt test"
   }
 }
