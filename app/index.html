@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="styles/custom_anim.css">
     <!-- endbuild -->
     <!-- end custom css -->
+    <base href="/">
   </head>
   <body ng-app="myTodoAngularApp">
     <!--[if lt IE 7]>
@@ -32,9 +33,9 @@
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="/">Home</a></li>
-          <li><a ng-href="/main">Main</a></li>
-          <li><a ng-href="/about">About</a></li>
+          <li class="active"><a ng-href="#/">Home</a></li>
+          <li><a ng-href="#/main">Main</a></li>
+          <li><a ng-href="#/about">About</a></li>
         </ul>
         <h3 class="text-muted">Angular Todo List</h3>
       </div>
