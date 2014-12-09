@@ -6,7 +6,7 @@
 	opacity: 0;
 }
 .todo-item.ng-enter.ng-enter-active {
-	opacity:1;
+	opacity: 1;
 }
 
 .todo-item.ng-leave {

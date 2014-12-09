@@ -8,29 +8,39 @@
 </form>
 
 <!-- New task input form -->
-<div class="jumbotron-small">
-	<div class="input-group">
-		<!-- The task description input -->
-		<input class="form-control" ng-model="newTodoText" type="text" placeholder="New todo description" style="width: 55%">
+<div class="row">
+	<div class="jumbotron-small">
+		<div class="input-group full-width">
+			<!-- The task description input -->
+			<div class="col-sm-6 no-padding">
+				<input class="form-control" ng-model="newTodoText" type="text" placeholder="New todo description">
+			</div>
 
-		<!-- The task priority dropdown -->
-		<select class="form-control" ng-model="newTodoPriority" style="width: 20%">
-			<option value="" disabled selected class="hidden">Priority</option>
-			<option value="1">High</option>
-			<option value="2">Medium</option>
-			<option value="3">Low</option>
-		</select>
+			<!-- The task priority dropdown -->
+			<div class="col-sm-2 no-padding">
+				<select class="form-control" ng-model="newTodoPriority">
+					<option value="" disabled selected class="hidden">Priority</option>
+					<option value="1">High</option>
+					<option value="2">Medium</option>
+					<option value="3">Low</option>
+				</select>
+			</div>
 
-		<!-- The task due date selector -->
-		<input class="form-control" ng-model="newTodoDate" type="date" style="width: 25%">
+			<!-- The task due date selector -->
+			<div class="col-sm-3 no-padding">
+				<input class="form-control" ng-model="newTodoDate" type="date">
+			</div>
 
-		<!-- The add task button -->
-		<span class="input-group-btn" style="">
-				<button class="btn btn-default" type="button" ng-click="addNewTodo()">
-					<i class="glyphicon glyphicon-plus"></i>
-				</button>
-		</span>
+			<!-- The add task button -->
+			<div class="col-sm-1 no-padding">
+				<div class="input-group-btn">
+					<button class="btn btn-default full-width" type="button" ng-click="addNewTodo()">
+						<i class="glyphicon glyphicon-plus"></i>
+					</button>
+				</div>
+			</div>
 
+		</div>
 	</div>
 </div>
 
@@ -42,9 +52,13 @@
 	<div class="form-group">
 		<!-- Label for todo list -->
 		<label class="col-sm-3 control-label" style="text-align:left;">Todo List</label>
+		<div class="col-sm-1">
+			<!-- Include an invisible input so that "Todo List" and "Sort by:" get placed on separate lines on mobile devices -->
+			<input style="display: none;"></input>
+		</div>
 
 		<!-- Sort by dropdown -->
-		<label for="sort" class="col-sm-2 col-sm-offset-4 control-label" style="padding-right:0px">Sort by:</label>
+		<label for="sort" class="col-sm-2 col-sm-offset-3 control-label" style="padding-right:0px; font-weight: normal">Sort by:</label>
 		<div class="col-sm-3">
 			<select id="sort" class="form-control" ng-model="todoSortBy">
 				<option value="description">Alphabetical</option>

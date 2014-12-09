@@ -9,12 +9,11 @@ angular.module('myTodoAngularApp')
 		/* * * LOCAL FUNCTIONS * * */
 
 		// Save todo items in appropriate storage
-		// newValue and oldValue are defined so the $watch recognizes
-		// this function as a valid callback
 		function saveTodos() {
 			if (supportsLocalStorage) {
 				localStorage.setItem('myTodos', JSON.stringify($scope.todos));
 			}
+			// Use Base64 encryption for cookie todos
 			else {
 				document.cookie = 'myTodos=' + window.btoa(JSON.stringify($scope.todos));
 			}
@@ -40,7 +39,7 @@ angular.module('myTodoAngularApp')
 			return maxId;
 		}
 
-		// Get cookie from document.cookie by name
+		// Get cookie from document.cookie *by name*
 		function getCookie(name) {
 			var value = '; ' + document.cookie;
 			var parts = value.split('; ' + name + '=');
@@ -157,7 +156,6 @@ angular.module('myTodoAngularApp')
 			}
 			// Otherwise return a formatted date string
 			else {
-				console.log('Sometime else!');
 				return Date.parse(date).toString('d MMM yy');
 			}
 		};
