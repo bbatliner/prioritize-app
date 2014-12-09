@@ -5,7 +5,7 @@
     <title>Prioritize</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <!-- favicons and related device specific stuff -->
+    <!-- favicons and device specific icons -->
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
@@ -24,7 +24,7 @@
     <meta name="msapplication-TileColor" content="#00f000">
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="application-name" content="Prioritize">
-    <!-- end favicons and related stuff -->
+    <!-- end favicons and device specific icons -->
 
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
@@ -45,8 +45,11 @@
     <link rel="stylesheet" href="styles/custom_media.css">
     <!-- endbuild -->
     <!-- end custom css -->
+
+    <!-- Define the base path for the $locationProvider and HTML5 history -->
     <base href="/">
   </head>
+
   <body ng-app="myTodoAngularApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -54,32 +57,32 @@
 
     <!-- Add your site or application content here -->
     <div class="container">
-      <div class="header">
-        <div class="row">
-            <div class="col-sm-8">
-            <h3 class="text-muted"><span class="icon-logo">&nbsp;</span>Prioritize: Todo List</h3>
+        <div class="header">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="text-muted"><span class="icon-logo">&nbsp;</span>Prioritize: Todo List</h3>
+                </div>
+                <div class="col-sm-4">
+                    <ul class="nav nav-pills centered-pills">
+                        <li class="active"><a ng-href="/">Home</a></li>
+                        <li><a ng-href="/main">Main</a></li>
+                        <li><a ng-href="/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div ng-view=""></div>
+
+            <div class="footer">
+                <p>&copy; 2014 Brendan Batliner</p>
+            </div>
         </div>
-        <div class="col-sm-4">
-            <ul class="nav nav-pills centered-pills">
-              <li class="active"><a ng-href="/">Home</a></li>
-              <li><a ng-href="/main">Main</a></li>
-              <li><a ng-href="/about">About</a></li>
-            </ul>
-        </div>
-
-      </div>
-
-      <div ng-view=""></div>
-
-      <div class="footer">
-        <p>&copy; 2014 Brendan Batliner</p>
-      </div>
-      </div>
     </div>
+    <!-- End site or application content -->
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
+    <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

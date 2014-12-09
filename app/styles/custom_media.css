@@ -1,5 +1,5 @@
-/* Put any custom media CSS in here */
-
+/* When on a mobile device, change some styling 
+   to make things easier to see */
 @media screen and (max-width: 767px) {
 	.header {
 		margin-bottom: 15px;

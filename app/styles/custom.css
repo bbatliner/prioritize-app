@@ -1,9 +1,21 @@
 body {
+	/* ALways show the scroll bar; helps window width
+	   stay constant when navigating between views */
 	overflow: scroll;
 }
 
 .dark {
 	border-color: #d9d9d9;
+}
+
+.bg-red {
+	background-color: red;
+}
+.bg-green {
+	background-color: green;
+}
+.bg-blue {
+	background-color: blue;
 }
 
 .no-padding {
@@ -21,6 +33,8 @@ body {
 }
 
 .input-group.full-width {
+	/* Allow the jumbotron to actually show on 
+	   the sides of the input group */
 	padding-right: 7px;
 	padding-left: 7px;
 }
@@ -49,8 +63,10 @@ body {
 }
 
 .todo-item {
-	margin-bottom: -1px;	
+	margin-bottom: -1px;
 }
+/* A lot of overrides to prevent the badges 
+   from changing colors when hovered */
 .todo-item :hover {
 	background-color: #eee;
 }
@@ -66,18 +82,12 @@ body {
 .todo-item > div:hover > .bg-green {
 	background-color: green;
 }
+.todo-item > .form-control {
+	/* Wrap todo to description height */
+	height: 100%;
+}
 
 .todo-badge {
 	margin-right: 2px;
 	margin-left: 2px;
-}
-
-.bg-red {
-	background-color: red;
-}
-.bg-green {
-	background-color: green;
-}
-.bg-blue {
-	background-color: blue;
 }
