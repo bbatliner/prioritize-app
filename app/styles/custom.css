@@ -83,6 +83,10 @@ body {
 	/* Wrap todo to description height */
 	height: 100%;
 }
+.todo-item > .form-control > .row {
+	margin-right: -17px;
+	margin-left: -7px;
+}
 
 .todo-badge {
 	margin-right: 2px;

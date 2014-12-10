@@ -89,24 +89,35 @@
 <div class="input-group todo-item" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
 
 	<!-- checkbox for item -->
+	<!-- TODO: consider changing to a check icon (easier
+			for mobile users) -->
 	<span class="input-group-addon">
 		<input type="checkbox" ng-click="removeTodo(todos.indexOf(todo))">
 	</span>
 	<!-- end checkbox for item -->
 
 	<!-- todo item -->
-	<div class="form-control">
-		<!-- MAKE THE FORM FROM ABOVE, SHOW UP HERE!
+	<div class="form-control" ng-click="startEditingTodo(this)">
+		<!-- TODO: MAKE THE FORM FROM ABOVE, SHOW UP HERE!
 				GENIUSSSSSS! plz
 		-->
 		<div class="row">
 			<div class="col-sm-9">
-				<span ng-click="" ng-hide="isEditingTodo">
+				<!-- description -->
+				<span ng-hide="isEditingTodo">
 					{{todo.description}}
 				</span>
-				<div ng-click="" ng-show="isEditingTodo">
+				<!-- end description -->
+				<!-- edit description -->
+				<div ng-show="isEditingTodo">
 					<input class="form-control" type="text" ng-value="todo.description">
+					<div class="input-group-btn">
+						<button class="btn btn-default" type="button" ng-click="stopEditingTodo()">
+							<i class="glyphicon glyphicon-check"></i>
+						</button>
+					</div>
 				</div>
+				<!-- end edit description -->
 			</div>
 
 		<!-- badges -->

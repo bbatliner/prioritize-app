@@ -4,7 +4,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('TodoCtrl', ['$scope', function ($scope) {
+	.controller('TodoController', ['$scope', function ($scope) {
 
 		/* * * LOCAL FUNCTIONS * * */
 
@@ -136,6 +136,16 @@ angular.module('myTodoAngularApp')
 
 			// Reset the input fields
 			resetInputs();
+		};
+
+		// Show UI for editing a todo
+		$scope.startEditingTodo = function(myTodo) {
+			myTodo.$isEditing = true;
+			console.log(myTodo);
+		};
+		// Hide UI for editing a todo
+		$scope.stopEditingTodo = function() {
+			$scope.isEditingTodo = false;
 		};
 
 		// Remove a todo item
