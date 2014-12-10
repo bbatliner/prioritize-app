@@ -70,16 +70,13 @@ body {
 .todo-item :hover {
 	background-color: #eee;
 }
-.todo-item > div :hover {
-	background-color: #777;
-}
-.todo-item > div:hover > .bg-red {
+.todo-item > div:hover .bg-red {
 	background-color: red;
 }
-.todo-item > div:hover > .bg-blue {
+.todo-item > div:hover .bg-blue {
 	background-color: blue;
 }
-.todo-item > div:hover > .bg-green {
+.todo-item > div:hover .bg-green {
 	background-color: green;
 }
 .todo-item > .form-control {
@@ -90,4 +87,8 @@ body {
 .todo-badge {
 	margin-right: 2px;
 	margin-left: 2px;
+}
+
+.date-badge:hover {
+	background-color: #777;
 }

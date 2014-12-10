@@ -8,7 +8,7 @@ angular.module('myTodoAngularApp')
 
 		/* * * LOCAL FUNCTIONS * * */
 
-		// Save todo items in appropriate storage
+		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
 				localStorage.setItem('myTodos', JSON.stringify($scope.todos));
@@ -71,6 +71,7 @@ angular.module('myTodoAngularApp')
 
 		// Models for other things
 		$scope.todoSortBy = 'duedate';
+		$scope.isEditingTodo = false;
 
 		/* 
 		TODO Model:
