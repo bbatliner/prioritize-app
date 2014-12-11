@@ -142,13 +142,13 @@
 
 			<!-- description input -->
 			<div class="col-sm-5 no-padding">
-				<input class="form-control" type="text" ng-model="todo.description">
+				<input class="form-control input-sm" type="text" ng-model="todo.description">
 			</div>
 			<!-- end description input -->
 
 			<!-- priority dropdown -->
 			<div class="col-sm-2 no-padding">
-				<select class="form-control" ng-model="todo.priority">
+				<select class="form-control input-sm" ng-model="todo.priority">
 					<option value="" disabled selected class="hidden">Priority</option>
 					<option value="1">High</option>
 					<option value="2">Medium</option>
@@ -159,17 +159,17 @@
 
 			<!-- due date selector -->
 			<div class="col-sm-3 no-padding">
-				<input class="form-control" type="date" ng-model="$editTodoDate">
+				<input class="form-control input-sm" type="date" ng-model="$editTodoDate">
 			</div>
 			<!-- end due date selector -->
 
 			<!-- add button -->
 			<div class="col-sm-2 no-padding">
 				<div class="input-group-btn">
-					<button class="btn btn-default half-width" type="button" ng-click="cancelEditingTodo(this)">
+					<button class="btn btn-default btn-sm half-width" type="button" ng-click="cancelEditingTodo(this)">
 						<i class="glyphicon glyphicon-remove"></i>
 					</button>
-					<button class="btn btn-default half-width" type="button" ng-click="saveEditingTodo(this)">
+					<button class="btn btn-default btn-sm half-width" type="button" ng-click="saveEditingTodo(this)">
 						<i class="glyphicon glyphicon-floppy-disk"></i>
 					</button>
 				</div>
