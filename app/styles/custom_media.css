@@ -1,5 +1,6 @@
 /* When on a mobile device, change some styling 
    to make things easier to see */
+
 @media screen and (max-width: 767px) {
 	.header {
 		margin-bottom: 15px;
@@ -18,10 +19,15 @@
 		margin-bottom: 15px;
 	}
 
+/* Doesn't work / not applicable
+	.todo-item.input-group-btn {
+		height: 100%;
+	}
+*/
+
 	.input-group.full-width {
 		margin: 0 auto;
 		width: 80%;
 	}
-
 	
 }

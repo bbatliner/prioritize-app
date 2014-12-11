@@ -19,6 +19,11 @@ angular.module('myTodoAngularApp')
 			}
 		}
 
+		// Hide the edit todo UI
+		function hideEditTodoUI(todo) {
+			todo.$isEditing = false;
+		}
+
 		// Reset all input fields
 		function resetInputs() {
 			$scope.newTodoText = '';
@@ -90,6 +95,7 @@ angular.module('myTodoAngularApp')
 		else {
 			var myTodosCookie = getCookie('myTodos');
 			if (myTodosCookie !== undefined) {
+				// Decode Base64 encryption
 				$scope.todos = JSON.parse(window.atob(myTodosCookie));
 			}
 		}
@@ -141,11 +147,22 @@ angular.module('myTodoAngularApp')
 		// Show UI for editing a todo
 		$scope.startEditingTodo = function(myTodo) {
 			myTodo.$isEditing = true;
-			console.log(myTodo);
+			// Provide a parsed Data object for the edit todo form
+			myTodo.$editTodoDate = Date.parse(myTodo.todo.duedate);
 		};
-		// Hide UI for editing a todo
-		$scope.stopEditingTodo = function() {
-			$scope.isEditingTodo = false;
+		// Don't save the edited todo 
+		$scope.cancelEditingTodo = function(myTodo) {
+			hideEditTodoUI(myTodo);
+		};
+		// Save the edited todo
+		$scope.saveEditingTodo = function(myTodo) {
+			// Convert the Date object into a string
+			var myDateString = JSON.stringify(myTodo.$editTodoDate);
+			// Remove the quotation marks
+			myTodo.todo.duedate = myDateString.substring(1, myDateString.length-1);
+
+			saveTodos();
+			hideEditTodoUI(myTodo);
 		};
 
 		// Remove a todo item

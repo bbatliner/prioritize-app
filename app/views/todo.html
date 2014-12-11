@@ -89,52 +89,95 @@
 <div class="input-group todo-item" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
 
 	<!-- checkbox for item -->
-	<!-- TODO: consider changing to a check icon (easier
-			for mobile users) -->
-	<span class="input-group-addon">
-		<input type="checkbox" ng-click="removeTodo(todos.indexOf(todo))">
+	<span class="input-group-btn" ng-hide="$isEditing">
+		<!-- when the button is clicked, keep the button in the 'active' state (the todo is being removed soon, anyways) -->
+		<button class="btn btn-default" type="button" ng-click="removeTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
+			<i class="glyphicon glyphicon-ok"></i>
+		</button>
 	</span>
 	<!-- end checkbox for item -->
 
 	<!-- todo item -->
-	<div class="form-control" ng-click="startEditingTodo(this)">
-		<!-- TODO: MAKE THE FORM FROM ABOVE, SHOW UP HERE!
-				GENIUSSSSSS! plz
-		-->
-		<div class="row">
-			<div class="col-sm-9">
-				<!-- description -->
-				<span ng-hide="isEditingTodo">
-					{{todo.description}}
-				</span>
-				<!-- end description -->
-				<!-- edit description -->
-				<div ng-show="isEditingTodo">
-					<input class="form-control" type="text" ng-value="todo.description">
-					<div class="input-group-btn">
-						<button class="btn btn-default" type="button" ng-click="stopEditingTodo()">
-							<i class="glyphicon glyphicon-check"></i>
-						</button>
-					</div>
-				</div>
-				<!-- end edit description -->
+	<div class="form-control">
+
+		<!-- view todo -->
+		<div class="row" ng-hide="$isEditing">
+
+			<!-- description -->
+			<div class="col-sm-8 no-padding-left">
+				{{todo.description}}
 			</div>
+			<!-- end description -->
 
-		<!-- badges -->
-		<div class="col-sm-3">
-			<!-- date badge -->
-			<span class="badge todo-badge date-badge pull-right" style="width:80px">
-				{{getDateString(todo.duedate)}}
-			</span>
-			<!-- end date badge -->
+			<!-- badges -->
+			<div class="col-sm-4 no-padding-right">
 
-			<!-- priority badge -->
-			<span class="badge todo-badge pull-right" ng-class="priorityColorClass(todo.priority)">
-				{{todo.priority}}
-			</span>
-			<!-- end priority badge -->
+				<!-- edit button -->
+				<span class="pull-right icon-button">
+						<i class="glyphicon glyphicon-pencil" ng-click="startEditingTodo(this)"></i>
+					</button>
+				</span>
+				<!-- end edit button -->
+
+				<!-- date badge -->
+				<span class="badge todo-badge date-badge pull-right" style="width:80px">
+					{{getDateString(todo.duedate)}}
+				</span>
+				<!-- end date badge -->
+
+				<!-- priority badge -->
+				<span class="badge todo-badge pull-right" ng-class="priorityColorClass(todo.priority)">
+					{{todo.priority}}
+				</span>
+				<!-- end priority badge -->
+
+			</div>
+			<!-- end badges -->
+
 		</div>
-		<!-- end badges -->
+		<!-- end view todo -->
+
+		<!-- edit todo -->
+		<div class="input-group full-width" ng-show="$isEditing">
+
+			<!-- description input -->
+			<div class="col-sm-5 no-padding">
+				<input class="form-control" type="text" ng-model="todo.description">
+			</div>
+			<!-- end description input -->
+
+			<!-- priority dropdown -->
+			<div class="col-sm-2 no-padding">
+				<select class="form-control" ng-model="todo.priority">
+					<option value="" disabled selected class="hidden">Priority</option>
+					<option value="1">High</option>
+					<option value="2">Medium</option>
+					<option value="3">Low</option>
+				</select>
+			</div>
+			<!-- end priority dropdown -->
+
+			<!-- due date selector -->
+			<div class="col-sm-3 no-padding">
+				<input class="form-control" type="date" ng-model="$editTodoDate">
+			</div>
+			<!-- end due date selector -->
+
+			<!-- add button -->
+			<div class="col-sm-2 no-padding">
+				<div class="input-group-btn">
+					<button class="btn btn-default half-width" type="button" ng-click="cancelEditingTodo(this)">
+						<i class="glyphicon glyphicon-remove"></i>
+					</button>
+					<button class="btn btn-default half-width" type="button" ng-click="saveEditingTodo(this)">
+						<i class="glyphicon glyphicon-floppy-disk"></i>
+					</button>
+				</div>
+			</div>
+			<!-- end add button -->
+
+		</div>
+		<!-- end edit todo -->
 
 	</div>
 	<!-- end todo item -->

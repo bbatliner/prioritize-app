@@ -31,6 +31,9 @@ body {
 .full-width {
 	width: 100%;
 }
+.half-width {
+	width: 50%;
+}
 
 .input-group.full-width {
 	/* Allow the jumbotron to actually show on 
@@ -45,6 +48,12 @@ body {
 }
 .icon-logo:before {
 	content: url('/favicon-32x32.png');;
+}
+
+.icon-button {
+	color: black;
+	margin-right: 3px;
+	margin-left: 3px;
 }
 
 .centered-pills {
@@ -67,7 +76,7 @@ body {
 }
 /* A lot of overrides to prevent the badges 
    from changing colors when hovered */
-.todo-item :hover {
+.todo-item > div:hover {
 	background-color: #eee;
 }
 .todo-item > div:hover .bg-red {
@@ -84,8 +93,8 @@ body {
 	height: 100%;
 }
 .todo-item > .form-control > .row {
-	margin-right: -17px;
-	margin-left: -7px;
+	margin-right: -5px;
+	margin-left: -5px;
 }
 
 .todo-badge {
