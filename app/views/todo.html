@@ -32,7 +32,8 @@
 
 			<!-- due date selector -->
 			<div class="col-sm-3 no-padding">
-				<input class="form-control" ng-model="newTodoDate" type="date">
+				<input class="form-control" id="newTodoDate" type="date" ng-if="inputTypeDateSupported">
+				<input class="form-control" id="newTodoDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
 			</div>
 			<!-- end due date selector -->
 
@@ -86,10 +87,10 @@
 <!-- END TODO SORT DROPDOWN -->
 
 <!-- TODO LIST -->
-<div class="input-group todo-item" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
+<div class="input-group todo-item full-width" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
 
 	<!-- checkbox for item -->
-	<span class="input-group-btn" ng-hide="$isEditing">
+	<span class="input-group-btn" ng-hide="isEditing">
 		<!-- when the button is clicked, keep the button in the 'active' state (the todo is being removed soon, anyways) -->
 		<button class="btn btn-default" type="button" ng-click="removeTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
 			<i class="glyphicon glyphicon-ok"></i>
@@ -101,7 +102,7 @@
 	<div class="form-control">
 
 		<!-- view todo -->
-		<div class="row" ng-hide="$isEditing">
+		<div class="row" ng-hide="isEditing">
 
 			<!-- description -->
 			<div class="col-sm-8 no-padding-left">
@@ -120,7 +121,7 @@
 				<!-- end edit button -->
 
 				<!-- date badge -->
-				<span class="badge todo-badge date-badge pull-right" style="width:80px">
+				<span class="badge todo-badge date-badge pull-right" style="width:108px">
 					{{getDateString(todo.duedate)}}
 				</span>
 				<!-- end date badge -->
@@ -138,7 +139,7 @@
 		<!-- end view todo -->
 
 		<!-- edit todo -->
-		<div class="input-group full-width" ng-show="$isEditing">
+		<div class="input-group full-width" ng-show="isEditing">
 
 			<!-- description input -->
 			<div class="col-sm-5 no-padding">
@@ -159,7 +160,7 @@
 
 			<!-- due date selector -->
 			<div class="col-sm-3 no-padding">
-				<input class="form-control input-sm" type="date" ng-model="$editTodoDate">
+				<input class="form-control input-sm" type="date" ng-model="editTodoDate">
 			</div>
 			<!-- end due date selector -->
 

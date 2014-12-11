@@ -21,14 +21,14 @@ angular.module('myTodoAngularApp')
 
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
-			todo.$isEditing = false;
+			todo.isEditing = false;
 		}
 
 		// Reset all input fields
 		function resetInputs() {
 			$scope.newTodoText = '';
 			$scope.newTodoPriority = '';
-			$scope.newTodoDate = null;
+			$('#newTodoDate').val('');
 		}
 
 		// Find the current max id on the todo items
@@ -53,14 +53,27 @@ angular.module('myTodoAngularApp')
 			}
 		}
 
+		function daysBetween(date1, date2) {
+		  // One day in milliseconds
+		  var msDay =1000 * 60 * 60 * 24;
+
+		  // Convert both dates to milliseconds
+		  var msDate1 = date1.getTime();
+		  var msDate2 = date2.getTime();
+
+		  // Calculate the difference in milliseconds
+		  var msDifference = msDate2 - msDate1;
+		    
+		  // Convert back to days and return
+		  return Math.round(msDifference / msDay); 
+		}
+
 		/* * * END LOCAL FUNCTIONS * * */
 
 
 		/* * * START INITIALIZATION CODE * * */
 
-		// STOP THE BEEPING :O
-		// (use the '$' operator so JSHint doesn't fail)
-		$();
+		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
 
 		var supportsLocalStorage = false;
 		// If browser supports localStorage, store todos there
@@ -72,7 +85,6 @@ angular.module('myTodoAngularApp')
 		// Models for input fields for new todo item
 		$scope.newTodoText = '';
 		$scope.newTodoPriority = '';
-		$scope.newTodoDate = null;
 
 		// Models for other things
 		$scope.todoSortBy = 'duedate';
@@ -118,6 +130,7 @@ angular.module('myTodoAngularApp')
 
 		// Add a new todo itme
 		$scope.addNewTodo = function() {
+
 			// Validate inputs
 			if ($scope.newTodoText === '') {
 				noty({ type: 'error', text: 'Description cannot be blank!', timeout: 1000 });
@@ -127,7 +140,7 @@ angular.module('myTodoAngularApp')
 				noty({ type: 'error', text: 'Priority must be set!', timeout: 1000 });
 				return;
 			}
-			else if ($scope.newTodoDate === null) {
+			else if ($('#newTodoDate').val() === '') {
 				noty({ type: 'error', text: 'Due date must be set!', timeout: 1000 });
 				return;
 			}
@@ -136,7 +149,10 @@ angular.module('myTodoAngularApp')
 			$scope.todos[$scope.todos.length] = {
 				id: ++$scope.currentMaxId,
 				description: $scope.newTodoText,
-				duedate: $scope.newTodoDate.toJSON(),
+				// For some reason, I couldn't get ng-model to work on the duedate.
+				// MOST LIKELY CAUSE: I don't understand how Angular $scope works.
+				// Anyways, have a jQuery hack until I learn enough to make sense of it.
+				duedate: Date.parse($('#newTodoDate').val()).toISOString() ,
 				priority: $scope.newTodoPriority,
 			};
 
@@ -146,9 +162,9 @@ angular.module('myTodoAngularApp')
 
 		// Show UI for editing a todo
 		$scope.startEditingTodo = function(myTodo) {
-			myTodo.$isEditing = true;
+			myTodo.isEditing = true;
 			// Provide a parsed Data object for the edit todo form
-			myTodo.$editTodoDate = Date.parse(myTodo.todo.duedate);
+			myTodo.editTodoDate = Date.parse(myTodo.todo.duedate).toString('MM/dd/yyyy');
 		};
 		// Don't save the edited todo 
 		$scope.cancelEditingTodo = function(myTodo) {
@@ -157,7 +173,7 @@ angular.module('myTodoAngularApp')
 		// Save the edited todo
 		$scope.saveEditingTodo = function(myTodo) {
 			// Convert the Date object into a string
-			var myDateString = JSON.stringify(myTodo.$editTodoDate);
+			var myDateString = Date.parse(myTodo.editTodoDate).toISOString();
 			// Remove the quotation marks
 			myTodo.todo.duedate = myDateString.substring(1, myDateString.length-1);
 
@@ -174,8 +190,19 @@ angular.module('myTodoAngularApp')
 
 		// Compare (ISO-8601) dates
 		$scope.getDateString = function(date) {
+			// If the date is anytime before today, find out how many days,
+			// and return '<days> day(s) overdue'
+			var daysBetweenDates = daysBetween(Date.today(), Date.parse(date));
+			if (daysBetweenDates < 0) {
+				if (daysBetweenDates === -1) {
+					return '1 day overdue';
+				}
+				else {
+					return -daysBetweenDates + ' days overdue';
+				}
+			} 
 			// If the date is anytime today, return 'Today'
-			if (Date.today().equals(Date.parse(date).at('0:00'))) {
+			else if (Date.today().equals(Date.parse(date).at('0:00'))) {
 				return 'Today';
 			}
 			// If the date is anytime 'tomorrow', return 'Tomorrow'
@@ -184,7 +211,7 @@ angular.module('myTodoAngularApp')
 			}
 			// Otherwise return a formatted date string
 			else {
-				return Date.parse(date).toString('d MMM yy');
+				return Date.parse(date).toString('d MMM \'yy');
 			}
 		};
 
