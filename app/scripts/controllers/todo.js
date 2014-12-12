@@ -55,7 +55,7 @@ angular.module('myTodoAngularApp')
 
 		function daysBetween(date1, date2) {
 		  // One day in milliseconds
-		  var msDay =1000 * 60 * 60 * 24;
+		  var msDay = 1000 * 60 * 60 * 24;
 
 		  // Convert both dates to milliseconds
 		  var msDate1 = date1.getTime();
@@ -192,7 +192,7 @@ angular.module('myTodoAngularApp')
 		$scope.getDateString = function(date) {
 			// If the date is anytime before today, find out how many days,
 			// and return '<days> day(s) overdue'
-			var daysBetweenDates = daysBetween(Date.today(), Date.parse(date));
+			var daysBetweenDates = daysBetween(Date.today().at('0:00'), Date.parse(date).at('0:00'));
 			if (daysBetweenDates < 0) {
 				if (daysBetweenDates === -1) {
 					return '1 day overdue';
