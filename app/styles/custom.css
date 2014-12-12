@@ -105,3 +105,12 @@ body {
 .date-badge:hover {
 	background-color: #777;
 }
+
+.footer {
+	margin-top: 20px;
+	padding-top: 0;
+}
+.footer p {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
