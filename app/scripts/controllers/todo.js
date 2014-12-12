@@ -163,8 +163,12 @@ angular.module('myTodoAngularApp')
 		// Show UI for editing a todo
 		$scope.startEditingTodo = function(myTodo) {
 			myTodo.isEditing = true;
-			// Provide a parsed Data object for the edit todo form
-			myTodo.editTodoDate = Date.parse(myTodo.todo.duedate);
+			// Provide the description for the form
+			myTodo.editDescription = myTodo.todo.description;
+			// Provide the priority for the form
+			myTodo.editPriority = myTodo.todo.priority;
+			// Provide a parsed Data object for the form
+			myTodo.editDueDate = Date.parse(myTodo.todo.duedate);
 		};
 		// Don't save the edited todo 
 		$scope.cancelEditingTodo = function(myTodo) {
@@ -172,9 +176,13 @@ angular.module('myTodoAngularApp')
 		};
 		// Save the edited todo
 		$scope.saveEditingTodo = function(myTodo) {
+			// Save the edited description
+			myTodo.todo.description = myTodo.editDescription;
+			// Save the edited priority
+			myTodo.todo.priority = myTodo.editPriority;
 			// Convert the Date object into a string
-			var myDateString = myTodo.editTodoDate.toISOString();
-			// Remove the quotation marks
+			var myDateString = myTodo.editDueDate.toISOString();
+			// Save the Date ;)
 			myTodo.todo.duedate = myDateString;
 
 			saveTodos();

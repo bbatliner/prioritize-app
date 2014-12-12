@@ -143,13 +143,13 @@
 
 			<!-- description input -->
 			<div class="col-sm-5 no-padding">
-				<input class="form-control input-sm" type="text" ng-model="todo.description">
+				<input class="form-control input-sm" type="text" ng-model="editDescription">
 			</div>
 			<!-- end description input -->
 
 			<!-- priority dropdown -->
 			<div class="col-sm-2 no-padding">
-				<select class="form-control input-sm" ng-model="todo.priority">
+				<select class="form-control input-sm" ng-model="editPriority">
 					<option value="" disabled selected class="hidden">Priority</option>
 					<option value="1">High</option>
 					<option value="2">Medium</option>
@@ -161,8 +161,8 @@
 			<!-- due date selector -->
 			<div class="col-sm-3 no-padding">
 				<!-- Woahhh! ng-if creates a child scope! Mind blown! So we use $parent to get the editTodoDate object out of the parent scope -->
-				<input class="form-control input-sm" ng-model="$parent.editTodoDate" type="date" ng-if="inputTypeDateSupported">
-				<input class="form-control input-sm" ng-model="$parent.editTodoDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
+				<input class="form-control input-sm" ng-model="$parent.editDueDate" type="date" ng-if="inputTypeDateSupported">
+				<input class="form-control input-sm" ng-model="$parent.editDueDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
 			</div>
 			<!-- end due date selector -->
 
