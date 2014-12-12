@@ -152,8 +152,8 @@ angular.module('myTodoAngularApp')
 				// For some reason, I couldn't get ng-model to work on the duedate.
 				// MOST LIKELY CAUSE: I don't understand how Angular $scope works.
 				// Anyways, have a jQuery hack until I learn enough to make sense of it.
-				duedate: Date.parse($('#newTodoDate').val()).toISOString() ,
-				priority: $scope.newTodoPriority,
+				duedate: Date.parse($('#newTodoDate').val()).toISOString(),
+				priority: $scope.newTodoPriority
 			};
 
 			// Reset the input fields
@@ -164,7 +164,7 @@ angular.module('myTodoAngularApp')
 		$scope.startEditingTodo = function(myTodo) {
 			myTodo.isEditing = true;
 			// Provide a parsed Data object for the edit todo form
-			myTodo.editTodoDate = Date.parse(myTodo.todo.duedate).toString('MM/dd/yyyy');
+			myTodo.editTodoDate = Date.parse(myTodo.todo.duedate);
 		};
 		// Don't save the edited todo 
 		$scope.cancelEditingTodo = function(myTodo) {
@@ -173,9 +173,9 @@ angular.module('myTodoAngularApp')
 		// Save the edited todo
 		$scope.saveEditingTodo = function(myTodo) {
 			// Convert the Date object into a string
-			var myDateString = Date.parse(myTodo.editTodoDate).toISOString();
+			var myDateString = myTodo.editTodoDate.toISOString();
 			// Remove the quotation marks
-			myTodo.todo.duedate = myDateString.substring(1, myDateString.length-1);
+			myTodo.todo.duedate = myDateString;
 
 			saveTodos();
 			hideEditTodoUI(myTodo);

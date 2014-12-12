@@ -160,7 +160,9 @@
 
 			<!-- due date selector -->
 			<div class="col-sm-3 no-padding">
-				<input class="form-control input-sm" type="date" ng-model="editTodoDate">
+				<!-- Woahhh! ng-if creates a child scope! Mind blown! So we use $parent to get the editTodoDate object out of the parent scope -->
+				<input class="form-control input-sm" ng-model="$parent.editTodoDate" type="date" ng-if="inputTypeDateSupported">
+				<input class="form-control input-sm" ng-model="$parent.editTodoDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
 			</div>
 			<!-- end due date selector -->
 
