@@ -87,12 +87,12 @@
 <!-- END TODO SORT DROPDOWN -->
 
 <!-- TODO LIST -->
-<div class="input-group todo-item full-width" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
+<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
 
 	<!-- checkbox for item -->
-	<span class="input-group-btn" ng-hide="isEditing">
+	<span class="input-group-btn full-height" ng-hide="isEditing">
 		<!-- when the button is clicked, keep the button in the 'active' state (the todo is being removed soon, anyways) -->
-		<button class="btn btn-default" type="button" ng-click="removeTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
+		<button class="btn btn-default btn-todo-check full-height" type="button" ng-click="removeTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
 			<i class="glyphicon glyphicon-ok"></i>
 		</button>
 	</span>
@@ -105,7 +105,7 @@
 		<div class="row" ng-hide="isEditing">
 
 			<!-- description -->
-			<div class="col-sm-8 no-padding-left">
+			<div class="col-sm-8 no-padding-left word-wrap">
 				{{todo.description}}
 			</div>
 			<!-- end description -->

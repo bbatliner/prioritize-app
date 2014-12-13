@@ -4,6 +4,11 @@ body {
 	overflow: scroll;
 }
 
+.word-wrap {
+	white-space: normal;
+	word-wrap: break-word;
+}
+
 .dark {
 	border-color: #d9d9d9;
 }
@@ -28,6 +33,9 @@ body {
 	padding-right: 0;
 }
 
+.full-height {
+	height: 100%;
+}
 .full-width {
 	width: 100%;
 }
@@ -71,6 +79,17 @@ body {
 	margin-bottom: 20px;
 }
 
+.btn-todo-check {
+	padding-top: 0px;
+	padding-bottom: 0px;
+
+	/* Create our own border to prevent the default border from creating vertical space */
+	border: none;
+	/* Solid 1px inset border of color #ccc - matches exactly with the default bootstrap `border`
+	in appearance, but does not add extra space to the bottom of the box-model */
+	box-shadow: inset 0px 0px 0px 1px #ccc;
+}
+
 .todo-item {
 	margin-bottom: -1px;
 }
@@ -95,6 +114,9 @@ body {
 .todo-item > .form-control > .row {
 	margin-right: -5px;
 	margin-left: -5px;
+}
+.todo-item > .input-group-btn {
+	vertical-align: top;
 }
 
 .todo-badge {
