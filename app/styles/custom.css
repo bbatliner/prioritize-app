@@ -63,6 +63,9 @@ body {
 	margin-right: 3px;
 	margin-left: 3px;
 }
+.icon-button :hover {
+	cursor: pointer;
+}
 
 .centered-pills {
     text-align: center;

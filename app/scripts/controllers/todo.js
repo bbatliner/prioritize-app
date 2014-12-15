@@ -88,6 +88,7 @@ angular.module('myTodoAngularApp')
 
 		// Models for other things
 		$scope.todoSortBy = 'duedate';
+		$scope.doneTodoSortBy = 'duedate';
 		$scope.isEditingTodo = false;
 
 		/* 
@@ -122,6 +123,8 @@ angular.module('myTodoAngularApp')
 		$scope.$watch('todos.length', function () {
 			saveTodos();
 		});
+
+		$scope.doneTodos = [];
 
 		/* * * END INITIALIZATION CODE * * */
 
@@ -160,6 +163,28 @@ angular.module('myTodoAngularApp')
 			resetInputs();
 		};
 
+		$scope.reAddTodo = function(index) {
+			if (index > -1) {
+				var todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
+				$scope.todos[$scope.todos.length] = todoToReAdd;
+			}
+		};
+
+		// Finish a todo item
+		$scope.finishTodo = function(index) {
+			if (index > -1) {
+				var doneTodo = $scope.todos.splice(index, 1)[0];
+				$scope.doneTodos[$scope.doneTodos.length] = doneTodo;
+			}
+		};
+
+		// Remove a todo item
+		$scope.deleteTodo = function(index) {
+			if (index > -1) {
+				$scope.doneTodos.splice(index, 1);
+			}
+		};
+
 		// Show UI for editing a todo
 		$scope.startEditingTodo = function(myTodo) {
 			myTodo.isEditing = true;
@@ -187,13 +212,6 @@ angular.module('myTodoAngularApp')
 
 			saveTodos();
 			hideEditTodoUI(myTodo);
-		};
-
-		// Remove a todo item
-		$scope.removeTodo = function(index) {
-			if (index > -1) {
-				$scope.todos.splice(index, 1);
-			}
 		};
 
 		// Compare (ISO-8601) dates
