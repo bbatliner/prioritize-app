@@ -64,7 +64,9 @@
 	<div class="form-group">
 
 		<!-- label for todo list -->
-		<label class="col-sm-3 control-label" style="text-align:left;">Todo List</label>
+		<label class="col-sm-3 control-label" style="text-align:left;">
+			Todo List ({{todos.length}})
+		</label>
 		<div class="col-sm-1">
 			<!-- Include an invisible input so that "Todo List" and "Sort by:" get placed on separate lines on mobile devices -->
 			<input style="display: none;"></input>
@@ -201,7 +203,7 @@
 <!-- END TODO LIST -->
 
 <!-- divider between sections -->
-<hr style="visibility: hidden !important">
+<hr style="visibility: hidden !important; margin-top: 10px; margin-bottom: 10px;">
 <!-- end divider between sections -->
 
 <!-- DONE TODO HEADER -->
@@ -210,7 +212,7 @@
 
 		<!-- label for todo list -->
 		<label class="col-sm-3 control-label" style="text-align:left;">
-			Done Todos
+			Done Todos ({{doneTodos.length}})
 			<span class="icon-button">
 				<i ng-class="getShowDoneTodosIconClass()" ng-click="toggleShowDoneTodos()"></i>
 			</span>
@@ -285,12 +287,12 @@
 
 					<!-- date badge -->
 					<span class="badge todo-badge date-badge pull-right" style="width:108px">
-						{{getDateString(todo.duedate)}}
+						{{getFormattedDateString(todo.duedate)}}
 					</span>
 					<!-- end date badge -->
 
 					<!-- priority badge -->
-					<span class="badge todo-badge pull-right" ng-class="priorityColorClass(todo.priority)">
+					<span class="badge todo-badge pull-right">
 						{{todo.priority}}
 					</span>
 					<!-- end priority badge -->

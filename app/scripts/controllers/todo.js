@@ -265,9 +265,13 @@ angular.module('myTodoAngularApp')
 			}
 			// Otherwise return a formatted date string
 			else {
-				return Date.parse(date).toString('d MMM \'yy');
+				return getFormattedDateString(date);
 			}
 		};
+
+		$scope.getFormattedDateString = function(date) {
+			return Date.parse(date).toString('d MMM \'yy');
+		}
 
 		// Get correct color class of priority
 		$scope.priorityColorClass = function(priority) {
