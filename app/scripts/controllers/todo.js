@@ -12,10 +12,11 @@ angular.module('myTodoAngularApp')
 		function saveTodos() {
 			if (supportsLocalStorage) {
 				localStorage.setItem('myTodos', JSON.stringify($scope.todos));
+				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneTodos));
 			}
 			// Use Base64 encryption for cookie todos
 			else {
-				document.cookie = 'myTodos=' + window.btoa(JSON.stringify($scope.todos));
+				document.cookie = 'myTodos=' + window.btoa(JSON.stringify($scope.todos)) + ';myDoneTodos=' + window.btoa(JSON.stringify($scope.doneTodos));
 			}
 		}
 
@@ -90,6 +91,7 @@ angular.module('myTodoAngularApp')
 		$scope.todoSortBy = 'duedate';
 		$scope.doneTodoSortBy = 'duedate';
 		$scope.isEditingTodo = false;
+		$scope.showDoneTodos = false;
 
 		/* 
 		TODO Model:
@@ -104,27 +106,29 @@ angular.module('myTodoAngularApp')
 		// Load initial todos from appropriate source
 		if (supportsLocalStorage) {
 			$scope.todos = JSON.parse(localStorage.getItem('myTodos'));
+			$scope.doneTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
 		}
 		else {
 			var myTodosCookie = getCookie('myTodos');
+			var myDoneTodosCookie = getCookie('myDoneTodos');
 			if (myTodosCookie !== undefined) {
 				// Decode Base64 encryption
 				$scope.todos = JSON.parse(window.atob(myTodosCookie));
 			}
+			if (myDoneTodosCookie !== undefined) {
+				// Decode Base64 encryption
+				$scope.doneTodos = JSON.parse(window.atob(myDoneTodosCookie));
+			}
 		}
-		// In case nothing was loaded, initialize an empty array
+		// In case nothing was loaded, initialize empty arrays
 		if ($scope.todos === null || $scope.todos === undefined) {
 			$scope.todos = [];
 		}
+		if ($scope.doneTodos === null || $scope.doneTodos === undefined) {
+			$scope.doneTodos = [];
+		}
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();
-
-		// Register callback for saving todos when they change
-		$scope.$watch('todos.length', function () {
-			saveTodos();
-		});
-
-		$scope.doneTodos = [];
 
 		/* * * END INITIALIZATION CODE * * */
 
@@ -159,6 +163,9 @@ angular.module('myTodoAngularApp')
 				priority: $scope.newTodoPriority
 			};
 
+			// Save todos
+			saveTodos();
+
 			// Reset the input fields
 			resetInputs();
 		};
@@ -168,6 +175,9 @@ angular.module('myTodoAngularApp')
 				var todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
 				$scope.todos[$scope.todos.length] = todoToReAdd;
 			}
+
+			// Save todos
+			saveTodos();
 		};
 
 		// Finish a todo item
@@ -176,6 +186,9 @@ angular.module('myTodoAngularApp')
 				var doneTodo = $scope.todos.splice(index, 1)[0];
 				$scope.doneTodos[$scope.doneTodos.length] = doneTodo;
 			}
+
+			// Save todos
+			saveTodos();
 		};
 
 		// Remove a todo item
@@ -183,6 +196,9 @@ angular.module('myTodoAngularApp')
 			if (index > -1) {
 				$scope.doneTodos.splice(index, 1);
 			}
+
+			// Save todos
+			saveTodos();
 		};
 
 		// Show UI for editing a todo
@@ -210,8 +226,20 @@ angular.module('myTodoAngularApp')
 			// Save the Date ;)
 			myTodo.todo.duedate = myDateString;
 
+			// Save todos
 			saveTodos();
+
 			hideEditTodoUI(myTodo);
+		};
+
+		$scope.toggleShowDoneTodos = function() {
+			$scope.showDoneTodos = !$scope.showDoneTodos;
+			// $('.doneTodoSlide').slideToggle();
+		};
+
+		$scope.getShowDoneTodosIconClass = function() {
+			return $scope.showDoneTodos ? 'glyphicon glyphicon-chevron-up'
+										: 'glyphicon glyphicon-chevron-down';
 		};
 
 		// Compare (ISO-8601) dates

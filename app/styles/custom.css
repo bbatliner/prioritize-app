@@ -62,6 +62,11 @@ body {
 	color: black;
 	margin-right: 3px;
 	margin-left: 3px;
+
+	-webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 .icon-button :hover {
 	cursor: pointer;
@@ -91,6 +96,10 @@ body {
 	/* Solid 1px inset border of color #ccc - matches exactly with the default bootstrap `border`
 	in appearance, but does not add extra space to the bottom of the box-model */
 	box-shadow: inset 0px 0px 0px 1px #ccc;
+}
+
+#todoList {
+	min-height: 60px;
 }
 
 .todo-item {

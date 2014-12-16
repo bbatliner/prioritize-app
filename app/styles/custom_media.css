@@ -1,6 +1,4 @@
-/* When on a mobile device, change some styling 
-   to make things easier to see */
-
+/* Mobile specific styling */
 @media screen and (max-width: 767px) {
 	.header {
 		margin-bottom: 15px;
@@ -19,4 +17,16 @@
 		margin-bottom: 15px;
 	}
 	
+	.todo-item .col-sm-8 {
+		padding-bottom: 7px;
+	}
+}
+
+/* Tablet + Desktop specific styling */
+@media screen and (min-width: 767px) {
+	.todo-item .form-control {
+		/* A little more vertical padding on todo items for larger devices */
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
 }
