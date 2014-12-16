@@ -265,7 +265,7 @@ angular.module('myTodoAngularApp')
 			}
 			// Otherwise return a formatted date string
 			else {
-				return getFormattedDateString(date);
+				return $scope.getFormattedDateString(date);
 			}
 		};
 
