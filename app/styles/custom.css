@@ -54,6 +54,10 @@ body {
 	padding-left: 7px;
 }
 
+.navbar-brand {
+	padding-top: 13px;
+}
+
 .main-logo {
 	height: 78px;
 	margin-top: -10px;

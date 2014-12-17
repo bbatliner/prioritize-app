@@ -29,6 +29,14 @@
 
 /* Tablet + Desktop specific styling */
 @media screen and (min-width: 767px) {
+
+	/* Don't style the navbar-brand on mobile - there's a 'Home' link for that! */
+	.navbar-brand.active {
+		color: #fff !important;
+		background-color: #080808 !important;
+	}
+
+
 	.todo-item .form-control {
 		/* A little more vertical padding on todo items for larger devices */
 		padding-top: 8px;
