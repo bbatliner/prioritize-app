@@ -43,6 +43,10 @@ body {
 	width: 50%;
 }
 
+.spacer {
+    margin-top: 50px;
+}
+
 .input-group.full-width {
 	/* Allow the jumbotron to actually show on 
 	   the sides of the input group */
@@ -50,12 +54,9 @@ body {
 	padding-left: 7px;
 }
 
-.icon-logo {
-	position: relative;
-	top: 7px;
-}
-.icon-logo:before {
-	content: url('/favicon-32x32.png');;
+.main-logo {
+	height: 78px;
+	margin-top: -10px;
 }
 
 .icon-button {

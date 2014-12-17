@@ -271,7 +271,7 @@ angular.module('myTodoAngularApp')
 
 		$scope.getFormattedDateString = function(date) {
 			return Date.parse(date).toString('d MMM \'yy');
-		}
+		};
 
 		// Get correct color class of priority
 		$scope.priorityColorClass = function(priority) {
