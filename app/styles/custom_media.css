@@ -29,4 +29,10 @@
 		padding-top: 8px;
 		padding-bottom: 8px;
 	}
+
+	.edit-form {
+		/* Ensure the edit todo form is the same height as the todo itself */
+		margin-top: -5px; 
+		margin-bottom: -5px;
+	}
 }
