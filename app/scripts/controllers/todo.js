@@ -243,7 +243,6 @@ angular.module('myTodoAngularApp')
 
 		$scope.toggleShowDoneTodos = function() {
 			$scope.showDoneTodos = !$scope.showDoneTodos;
-			// $('.doneTodoSlide').slideToggle();
 		};
 
 		$scope.getShowDoneTodosIconClass = function() {

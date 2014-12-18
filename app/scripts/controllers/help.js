@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('AboutController', function () {
+	.controller('HelpController', function () {
 		// Empty controller w00t
 	});
