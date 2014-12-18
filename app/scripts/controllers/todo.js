@@ -35,11 +35,20 @@ angular.module('myTodoAngularApp')
 		// Find the current max id on the todo items
 		function getCurrentMaxId() {
 			var maxId = 0;
+			// Search in todos
 			for (var i = 0; i < $scope.todos.length; i++) {
 				var currentTodo = $scope.todos[i];
 				var currentId = currentTodo.id;
 				if (currentId > maxId) {
 					maxId = currentId;
+				}
+			}
+			// Search in done todos
+			for (i = 0; i < $scope.doneTodos.length; i++) {
+				var currentDoneTodo = $scope.doneTodos[i];
+				var currentDoneId = currentDoneTodo.id;
+				if (currentDoneId > maxId) {
+					maxId = currentDoneId;
 				}
 			}
 			return maxId;
