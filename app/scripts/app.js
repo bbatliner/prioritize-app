@@ -46,4 +46,10 @@ angular
       //
       // Use the HTML5 History API
       // $locationProvider.html5Mode(true);
+  })
+  .run(function($rootScope, $location, $window) {
+    // Send Google Analytics pageview event when route changes
+    $rootScope.$on('$routeChangeSuccess', function() {
+      $window.ga('send', 'pageview', { page: $location.path() });
+    });
   });
