@@ -42,6 +42,9 @@ body {
 .half-width {
 	width: 50%;
 }
+.third-width {
+	width: 33.3%;
+}
 
 .spacer {
     margin-top: 10px;

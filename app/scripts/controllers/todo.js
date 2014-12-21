@@ -200,7 +200,17 @@ angular.module('myTodoAngularApp')
 			saveTodos();
 		};
 
-		// Remove a todo item
+		// Remove a todo item from the todo list
+		$scope.deleteUnfinishedTodo = function(index) {
+			if (index > -1) {
+				$scope.todos.splice(index, 1);
+			}
+
+			// Save todos
+			saveTodos();
+		};
+
+		// Remove a todo item from the done list
 		$scope.deleteTodo = function(index) {
 			if (index > -1) {
 				$scope.doneTodos.splice(index, 1);

@@ -99,13 +99,22 @@
 	<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
 
 		<!-- checkbox for item -->
-		<span class="input-group-btn full-height" ng-hide="isEditing">
+		<span class="input-group-btn full-height" ng-if="!isEditing">
 			<!-- when the button is clicked, keep the button in the 'active' state (the todo is being removed soon, anyways) -->
 			<button class="btn btn-default btn-todo-check full-height" type="button" ng-click="finishTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
 				<i class="glyphicon glyphicon-ok"></i>
 			</button>
 		</span>
 		<!-- end checkbox for item -->
+
+		<!-- trash can for item -->
+		<span class="input-group-btn full-height" ng-if="isEditing">
+			<!-- when the button is clicked, keep the button in the 'active' state (the todo is being removed soon, anyways) -->
+			<button class="btn btn-default btn-todo-check full-height" type="button" ng-click="deleteUnfinishedTodo(todos.indexOf(todo))" onClick="$(this).addClass('active')">
+				<i class="glyphicon glyphicon-trash"></i>
+			</button>
+		</span>
+		<!-- end trash can for item -->
 
 		<!-- todo item -->
 		<div class="form-control">
@@ -148,7 +157,7 @@
 			<!-- end view todo -->
 
 			<!-- edit todo -->
-			<div class="input-group full-width edit-form" ng-show="isEditing">
+			<div class="row input-group full-width edit-form" ng-show="isEditing">
 
 				<!-- description input -->
 				<div class="col-sm-5 no-padding">
@@ -175,7 +184,7 @@
 				</div>
 				<!-- end due date selector -->
 
-				<!-- add button --> <!-- float: left is for Firefox on a small (phone + tablet) viewport -->
+				<!-- save and cancel buttons --> <!-- float: left is for Firefox on a small (phone + tablet) viewport -->
 				<div class="col-sm-2 no-padding" style="float: left">
 					<div class="input-group-btn">
 						<button class="btn btn-default btn-sm half-width" type="button" ng-click="cancelEditingTodo(this)">
@@ -186,7 +195,7 @@
 						</button>
 					</div>
 				</div>
-				<!-- end add button -->
+				<!-- end save and cancel buttons -->
 
 			</div>
 			<!-- end edit todo -->
