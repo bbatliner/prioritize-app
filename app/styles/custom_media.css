@@ -25,6 +25,10 @@
 		height: 45px;
 		margin-top: -8px;
 	}
+
+	#feedback {
+		display: none;
+	}
 }
 
 /* Tablet + Desktop specific styling */
@@ -47,5 +51,29 @@
 		/* Ensure the edit todo form is the same height as the todo itself */
 		margin-top: -5px; 
 		margin-bottom: -5px;
+	}
+
+	#feedback {
+		position: fixed;
+		top: 50%;
+		right: -35px;
+		padding: 6px 14px;
+		z-index: 999;
+
+		border-radius: 5px;
+		border-top-right-radius: 0px;
+		border-top-left-radius: 0px;
+		border: 1px solid black;
+		background-color: #222;
+
+		-webkit-transform: rotate(90deg);
+		transform: rotate(90deg);
+
+		font-size: 17px;
+		text-decoration: none;
+		color: #fff;
+	}
+	#feedback:hover {
+		box-shadow: 0px 0px 3px 1px #00f300;
 	}
 }
