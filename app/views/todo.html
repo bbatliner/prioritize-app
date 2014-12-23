@@ -57,6 +57,19 @@
 <hr class="dark">
 <!-- end divider between sections -->
 
+
+<!-- todo categories nav tabs -->
+<ul id="categoryTabs" class="nav nav-tabs" style="margin-bottom: 10px">
+  <li class="active"><a href="#all" data-toggle="tab">All</a></li>
+  <li><a href="#school" data-toggle="tab">School</a></li>
+  <li><a href="" data-toggle="tab">Work</a></li>
+  <li><a href="" data-toggle="tab"><i class="glyphicon glyphicon-plus"></i></a></li>
+</ul>
+<!-- end todo categories nav tabs -->
+
+<!-- todo categories tab content -->
+<div class="tab-content">
+	<div class="tab-pane active" id="all">
 <!-- TODO SORT DROPDOWN -->
 <form class="form-horizontal">
 	<div class="form-group">
@@ -134,7 +147,6 @@
 					<!-- edit button -->
 					<span class="pull-right icon-button">
 							<i class="glyphicon glyphicon-pencil" ng-click="startEditingTodo(this)"></i>
-						</button>
 					</span>
 					<!-- end edit button -->
 
@@ -318,3 +330,9 @@
 
 </div>
 <!-- END DONE TODO LIST -->
+	</div>
+	<div class="tab-pane" id="school">
+		<p>Hello! This is tab 2</p>
+	</div>
+</div>
+<!-- end todo categories tab content

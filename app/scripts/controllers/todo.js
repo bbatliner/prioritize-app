@@ -78,6 +78,11 @@ angular.module('myTodoAngularApp')
 		  return Math.round(msDifference / msDay); 
 		}
 
+		$('#categoryTabs a').click(function(e) {
+		  e.preventDefault();
+		  $(this).tab('show');
+		});
+
 		/* * * END LOCAL FUNCTIONS * * */
 
 
