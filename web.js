@@ -1,18 +1,26 @@
+var serveDir = __dirname + '/dist';
+var scriptsDir = __dirname + '/node_scripts';
+
 var gzippo = require('gzippo');
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var mandrill = require('mandrill-api/mandrill');
 var mandrill_client = new mandrill.Mandrill(process.env.MANDRILL_API_KEY);
+var InputValidator = require(scriptsDir + '/InputValidator.js');
 
 /**
-	function sendEmail()
-	param _name
-	param _email
-	param _subject
-	param _message
+	function sendEmailToAdmin()
+	param _name: The name of the sender
+	param _email: The email of the sender
+	param _subject: The subject of the email
+	param _message: The message (plain text) of the email
 
-	returns a json object
+	returns the status of the email send:
+	'sent' - message sent to Mandrill successfully (does not guarantee delivery)
+	'invalid email' - email is invalid
+
+	will console.log the Mandrill API response when received
 	example response json:
 	{
         'email': 'recipient.email@example.com',
@@ -28,15 +36,16 @@ var mandrill_client = new mandrill.Mandrill(process.env.MANDRILL_API_KEY);
 	    'message': 'No subaccount exists with the id 'customer-123''
 	}
 */
-function sendEmail ( _name, _email, _subject, _message ) {
+function sendEmailToAdmin ( _name, _email, _subject, _message ) {	
+
 	var message = {
-	    'text': 'This is great feedback!',
-	    'subject': 'Prioritize Feedback',
-	    'from_email': 'feeback@prioritize.com',
-	    'from_name': 'John Smith',
+	    'text': _message,
+	    'subject': _subject,
+	    'from_email': _email,
+	    'from_name': _name,
 	    'to': [{
 	            'email': 'prioritize.app@gmail.com',
-	            'name': 'Prioritize Admin',
+	            'name': 'PrioritizeAdmin',
 	            'type': 'to'
 	    }]
 	};
@@ -56,18 +65,36 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.post( '/api/send-feedback' , function(req, res) {
-	var _name = req.body.name;
-	var _email = req.body.email;
-	var _subject = req.body.subject;
-	var _message = req.body.message;
 
-	sendEmail( _name, _email, _subject, _message );
+	// Get inputs (SHOULD CLEAN THEM)
+	var name = req.body.name;
+	var email = req.body.email;
+	var subject = req.body.subject;
+	var message = req.body.message;
 
-	// If the email failed to send, oh well, that's life
-	res.status(200).end();
+	// Validate inputs
+	if (email.length !== 0) {
+		if (InputValidator.ValidateEmail(email) === false) {
+			return res.status(400).json({ status: 400, error: 'Invalid email.' });
+		}
+	}
+	else {
+		// If the email wasn't set by the user, use a default one
+		email = 'prioritize.user@prioritize.com';
+	}
+
+	if (message.length === 0) {
+		return res.status(400).json({ status: 400, error: 'Feedback cannot be empty.' });
+	}
+
+	// Perform the API function :P
+	var status = sendEmailToAdmin(name, email, subject, message);
+
+	// If the email fails to deliver, oh well, that's life
+	return res.status(200).json({ status: 200 });
 });
 
-var serveDir = __dirname + '/dist';
+
 
 app.use(morgan('dev'));
 app.use(gzippo.staticGzip('' + serveDir));

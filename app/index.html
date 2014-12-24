@@ -23,7 +23,7 @@
     <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32">
     <meta name="msapplication-TileColor" content="#00f000">
     <meta name="msapplication-TileImage" content="images/mstile-144x144.png">
-    <meta name="application-name" content="Prioritize">
+    <meta name="application-name" content="Prioritize"> 
     <!-- end favicons and device specific icons -->
 
     <!-- build:css(.) styles/vendor.css -->
@@ -91,7 +91,7 @@
 
             <!-- footer -->
             <div class="footer">
-                <p>&copy; 2014 Brendan Batliner &middot; Comments? Suggestions? <a href="mailto:prioritize.app@gmail.com" target="_new">Give feedback!</a></p>
+                <p>&copy; 2014 Brendan Batliner</p>
             </div>
             <!-- end footer -->
         </div>
@@ -111,19 +111,29 @@
                         <h4 class="modal-title" id="feedbackModalLabel">Feedback Form</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="input-group">
-                          <input type="text" class="form-control" placeholder="Name">
-                        </div>
-                        <div class="input-group">
-                          <input type="text" class="form-control" placeholder="Email">
-                        </div>
-                        <div class="input-group">
-                          <textarea class="form-control" placeholder="Leave feedback here...">
-                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="feedbackEmail">Email address (optional)</label>
+                                <input type="email" class="form-control" id="feedbackEmail">
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackCategory">Category of feedback</label>
+                                <select class="form-control" id="feedbackCategory">
+                                    <option value="Suggestions">Suggestions</option>
+                                    <option value="Comments">Comments</option>
+                                    <option value="Bugs & Errors">Bugs & Errors</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackFeedback">Leave feedback here:</label>
+                                <textarea class="form-control" id="feedbackFeedback"></textarea>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="sendFeedback()">Send feedback</button>
+                        <button type="button" class="btn btn-primary" onclick="sendFeedback()">Send feedback</button>
                     </div>
                 </div>
             </div>
@@ -198,16 +208,21 @@
         });
 
         function sendFeedback() {
-            var message = 
+            var email = 
             {
-                name: 'Billy',
-                email: 'billy@bob.com',
-                subject: 'Hello!',
-                message: 'scru u'
+                name: 'PrioritizeUser',
+                email: $('#feedbackEmail').val(),
+                subject: 'Prioritize ' + $('#feedbackCategory').val(),
+                message: $('#feedbackFeedback').val()
             };
-            $.post( '/api/send-feedback' , message, function(data) {
-                noty({ type: 'success', text: 'Thank you for leaving your feedback!', timeout: 1500 });
-            });
+
+            $.post('/api/send-feedback', email)
+                .done(function(data) {
+                    noty({ type: 'success', text: 'Thank you for leaving your feedback!', timeout: 1500 });
+                })
+                .error(function(data) {                
+                    noty({ type: 'error', text: 'Error ' + data.responseJSON.status + ': ' + data.responseJSON.error, timeout: 1500 });
+                });
         }
     </script>
 
