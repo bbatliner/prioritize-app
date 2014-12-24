@@ -219,6 +219,10 @@
             $.post('/api/send-feedback', email)
                 .done(function(data) {
                     noty({ type: 'success', text: 'Thank you for leaving your feedback!', timeout: 1500 });
+                    // Clear inputs and close modal
+                    $('#feedbackEmail').val('');
+                    $('#feedbackFeedback').val('');
+                    $('#feedbackModal').modal('hide');
                 })
                 .error(function(data) {                
                     noty({ type: 'error', text: 'Error ' + data.responseJSON.status + ': ' + data.responseJSON.error, timeout: 1500 });
