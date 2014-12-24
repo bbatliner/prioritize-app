@@ -96,10 +96,40 @@
             <!-- end footer -->
         </div>
         <!-- feedback button -->
-        <a href="">
+        <a href="" data-toggle="modal" data-target="#feedbackModal">
             <div id="feedback">Feedback</div>
         </a>
         <!-- end feedback button -->
+
+
+        <!-- feedback modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" id="feedbackModalLabel">Feedback Form</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group">
+                          <input type="text" class="form-control" placeholder="Name">
+                        </div>
+                        <div class="input-group">
+                          <input type="text" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="input-group">
+                          <textarea class="form-control" placeholder="Leave feedback here...">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="sendFeedback()">Send feedback</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end feedback modal -->
+
     </div>
     <!-- end content -->
 
@@ -151,9 +181,10 @@
         <!-- endbuild -->
 
 
-    <!-- jQuery navbar active helper -->
+    <!-- index.html specific jQuery helpers -->
     <script>
         // When the hash changes (Angular serves pages based on the hash)
+        // Adjust the active navbar component
         $(function() {
             $(window).bind('hashchange', function() {
                 // Remove any currently active classes from the nav bar
@@ -165,6 +196,19 @@
             }).trigger('hashchange');
             // trigger once on page load
         });
+
+        function sendFeedback() {
+            var message = 
+            {
+                name: 'Billy',
+                email: 'billy@bob.com',
+                subject: 'Hello!',
+                message: 'scru u'
+            };
+            $.post( '/api/send-feedback' , message, function(data) {
+                noty({ type: 'success', text: 'Thank you for leaving your feedback!', timeout: 1500 });
+            });
+        }
     </script>
 
 </body>
