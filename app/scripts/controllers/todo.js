@@ -88,13 +88,20 @@ angular.module('myTodoAngularApp')
 
 		/* * * START INITIALIZATION CODE * * */
 
+		$scope.testTodos = JSON.parse('{ "categories": [ { "name": "School", "todos": [ { "id": 1, "description": "Finish project", "duedate": "2015-01-15T06:00:00.000Z", "priority": "2" }, { "id": 2, "description": "Do homework!", "duedate": "2015-01-20T06:00:00.000Z", "priority": "1" } ] }, { "name": "Work", "todos": [ { "id": 3, "description": "Get coffee", "duedate": "18301231", "priority": "1" }, { "id": 4, "description": "Finish project", "duedate": "18301231", "priority": "2" } ] } ] }');
+
+		$scope.currentCategory = 'School';
+
+		console.log($scope.testTodos);
+
+
 		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
 
 		var supportsLocalStorage = false;
 		// If browser supports localStorage, store todos there
 		// otherwise the default storage is cookies
 		if(typeof(Storage) !== 'undefined') {
-			supportsLocalStorage = true;
+			supportsLocalStorage = false;
 		}
 
 		// Models for input fields for new todo item
@@ -149,7 +156,7 @@ angular.module('myTodoAngularApp')
 
 		/* * * START CONTROLLER FUNCTIONS * * */
 
-		// Add a new todo itme
+		// Add a new todo item
 		$scope.addNewTodo = function() {
 
 			// Validate inputs
