@@ -20,6 +20,25 @@ angular.module('myTodoAngularApp')
 			}
 		}
 
+		// Extract todos in the nested categorical model to a single array
+		function extractCategoricalTodos(todos) {
+			// Initialize the empty array to hold all of the todos
+			var extractedTodos = [];
+			// foreach category
+			for (var i = 0; i < todos.categories.length; i++) {
+				var category = todos.categories[i];
+				// foreach todo in the category
+				for (var j = 0; j < category.todos.length; j++) {
+					var todo = category.todos[j];
+					// Store the todo's category in itself
+					todo.category = category.name;
+					// Add it to the extracted array
+					extractedTodos[extractedTodos.length] = todo;
+				}
+			}
+			return extractedTodos;
+		}
+
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
 			todo.isEditing = false;
@@ -88,11 +107,15 @@ angular.module('myTodoAngularApp')
 
 		/* * * START INITIALIZATION CODE * * */
 
-		$scope.testTodos = JSON.parse('{ "categories": [ { "name": "School", "todos": [ { "id": 1, "description": "Finish project", "duedate": "2015-01-15T06:00:00.000Z", "priority": "2" }, { "id": 2, "description": "Do homework!", "duedate": "2015-01-20T06:00:00.000Z", "priority": "1" } ] }, { "name": "Work", "todos": [ { "id": 3, "description": "Get coffee", "duedate": "18301231", "priority": "1" }, { "id": 4, "description": "Finish project", "duedate": "18301231", "priority": "2" } ] } ] }');
+		$scope.testTodos = JSON.parse('{ "categories": [ { "name": "School", "todos": [ { "id": 1, "description": "Finish project", "duedate": "2015-01-15T06:00:00.000Z", "priority": "2" }, { "id": 2, "description": "Do homework!", "duedate": "2015-01-20T06:00:00.000Z", "priority": "1" } ] }, { "name": "Work", "todos": [ { "id": 4, "description": "Talk to boss", "duedate": "2015-01-25T06:00:00.000Z", "priority": "2" } ] } ] }');
 
-		$scope.currentCategory = 'School';
+		$scope.currentCategory = '';
+		$scope.testMyTodos = extractCategoricalTodos($scope.testTodos);
 
 		console.log($scope.testTodos);
+		console.log($scope.testMyTodos);
+
+
 
 
 		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
@@ -230,6 +253,11 @@ angular.module('myTodoAngularApp')
 
 			// Save todos
 			saveTodos();
+		};
+
+		// Change current category of visible todos
+		$scope.changeCategory = function(category) { 
+			$scope.currentCategory = category;
 		};
 
 		// Show UI for editing a todo

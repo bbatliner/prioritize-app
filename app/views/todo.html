@@ -2,15 +2,11 @@
 
 <!-- todo categories nav tabs -->
 <ul id="categoryTabs" class="nav nav-tabs" style="margin-bottom: 10px">
-  <li class="active"><a href="#all" data-toggle="tab">All</a></li>
-  <li ng-repeat="category in testTodos.categories"><a ng-href="#{{category.name.toLowerCase()}}" data-toggle="tab">{{category.name}}</a></li>
+  <li class="active"><a href="" ng-click="changeCategory('')" data-toggle="tab">All</a></li>
+  <li ng-repeat="category in testTodos.categories"><a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a></li>
   <li><a href="" data-toggle="tab"><i class="glyphicon glyphicon-plus"></i></a></li>
 </ul>
 <!-- end todo categories nav tabs -->
-
-<!-- todo categories tab content -->
-<div class="tab-content">
-	<div class="tab-pane active" id="all">
 
 <!-- new task label -->
 <form class="form-horizontal" style="margin-top: 10px; margin-bottom:-5px;">
@@ -75,7 +71,7 @@
 
 		<!-- label for todo list -->
 		<label class="col-sm-3 control-label" style="text-align:left;">
-			Todo List ({{todos.length}})
+			Todo List ({{visibleTodos.length}})
 		</label>
 		<div class="col-sm-1">
 			<!-- Include an invisible input so that "Todo List" and "Sort by:" get placed on separate lines on mobile devices -->
@@ -102,13 +98,19 @@
 <div id="todoList">
 
 	<!-- no todos placeholder -->
-	<div id="placeholder" class="well" ng-if="todos.length == 0">
+	<div id="placeholder" class="well" ng-if="visibleTodos.length == 0">
 		<span>You have no todos! Add one above!</span>
 	</div>
 	<!-- end no todos placeholder -->
 
 	<!-- todo list foreach -->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | orderBy: todoSortBy track by todo.id">
+	<!-- this ng-repeat deserves a comment of its own
+		for todo in todos, which are filtered by whether or not their category matches the current selected category,
+		then ordered by the current selected sort order. This filtered and ordered list is mapped to a scope variable,
+		visibleTodos (for use outside the ng-repeat) and tracked by the id field in the todo.
+		Phew!
+	-->
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in testMyTodos | filter:{category: currentCategory} | orderBy: todoSortBy as visibleTodos track by todo.id">
 
 		<!-- checkbox for item -->
 		<span class="input-group-btn full-height" ng-if="!isEditing">
@@ -329,9 +331,3 @@
 
 </div>
 <!-- END DONE TODO LIST -->
-	</div>
-	<div class="tab-pane" id="school">
-		<p>Hello! This is tab 2</p>
-	</div>
-</div>
-<!-- end todo categories tab content
