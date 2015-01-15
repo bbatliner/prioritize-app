@@ -11,12 +11,12 @@ angular.module('myTodoAngularApp')
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
-				localStorage.setItem('myTodos', JSON.stringify($scope.todos));
-				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneTodos));
+				localStorage.setItem('myTodos', JSON.stringify(compressCategoricalTodos($scope.todos)));
+				localStorage.setItem('myDoneTodos', JSON.stringify(compressCategoricalTodos($scope.doneTodos)));
 			}
 			// Use Base64 encryption for cookie todos
 			else {
-				document.cookie = 'myTodos=' + window.btoa(JSON.stringify($scope.todos)) + ';myDoneTodos=' + window.btoa(JSON.stringify($scope.doneTodos));
+				document.cookie = 'myTodos=' + window.btoa(JSON.stringify(compressCategoricalTodos($scope.todos))) + ';myDoneTodos=' + window.btoa(JSON.stringify(compressCategoricalTodos($scope.doneTodos)));
 			}
 		}
 
@@ -37,6 +37,32 @@ angular.module('myTodoAngularApp')
 				}
 			}
 			return extractedTodos;
+		}
+
+		// Compress a single array of todos (with categories properties) into organized categories
+		// KNOWN BUGS: The category of the todo is still stored in the todo object, even though it is contained
+		// in a specific category object. Something with array references and the `delete` keyword
+		function compressCategoricalTodos(todos) {
+			var compressedTodos = JSON.parse('{ "categories": [] }');
+			var usedCategories = [];
+
+			for (var i = 0; i < todos.length; i++) {
+				var currentTodo = todos[i];
+				var todoCategory = currentTodo.category;
+				if ($.inArray(todoCategory, usedCategories) === -1) {
+					usedCategories[usedCategories.length] = todoCategory;
+					var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
+					for (var j = 0; j < todos.length; j++) {
+						var currentTodoToCheck = todos.slice()[j];
+						if (currentTodoToCheck.category === todoCategory) {
+							newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
+						}
+					}
+					compressedTodos.categories[compressedTodos.categories.length] = newCategory;
+				}
+			}
+
+			return compressedTodos;
 		}
 
 		// Hide the edit todo UI
@@ -73,6 +99,28 @@ angular.module('myTodoAngularApp')
 			return maxId;
 		}
 
+		// function getCurrentMaxId2(todos, doneTodos) {
+		// 	var maxId = 0;
+		// 	for (var i = 0; i < todos.categories.length; i++) {
+		// 		for (var j = 0; j < todos.categories[i].todos.length; j++) {
+		// 			var myTodo = todos.categories[i].todos[j];
+		// 			if (myTodo.id > maxId) {
+		// 				maxId = myTodo.id;
+		// 			}
+		// 		}
+		// 	}
+		// 	// Search in done todos
+		// 	for (var k = 0; k < doneTodos.categories.length; k++) {
+		// 		for (var l = 0; l < doneTodos.categories[k].todos.length; l++) {
+		// 			var myDoneTodo = doneTodos.categories[k].todos[l];
+		// 			if (myDoneTodo.id > maxId) {
+		// 				maxId = myDoneTodo.id;
+		// 			}
+		// 		}
+		// 	}
+		// 	return maxId;
+		// }
+
 		// Get cookie from document.cookie *by name*
 		function getCookie(name) {
 			var value = '; ' + document.cookie;
@@ -107,14 +155,19 @@ angular.module('myTodoAngularApp')
 
 		/* * * START INITIALIZATION CODE * * */
 
+		/* TEST */
 		$scope.testTodos = JSON.parse('{ "categories": [ { "name": "School", "todos": [ { "id": 1, "description": "Finish project", "duedate": "2015-01-15T06:00:00.000Z", "priority": "2" }, { "id": 2, "description": "Do homework!", "duedate": "2015-01-20T06:00:00.000Z", "priority": "1" } ] }, { "name": "Work", "todos": [ { "id": 4, "description": "Talk to boss", "duedate": "2015-01-25T06:00:00.000Z", "priority": "2" } ] } ] }');
-
-		$scope.currentCategory = '';
-		$scope.testMyTodos = extractCategoricalTodos($scope.testTodos);
-
+		
 		console.log($scope.testTodos);
-		console.log($scope.testMyTodos);
 
+		$scope.testMyTodos = extractCategoricalTodos($scope.testTodos);
+		console.log($scope.testMyTodos);
+		$scope.compressedTodos = compressCategoricalTodos($scope.testMyTodos);
+		console.log($scope.compressedTodos);
+		console.log(extractCategoricalTodos($scope.compressedTodos));
+
+		// console.log(getCurrentMaxId2($scope.testTodos, $scope.testTodos));
+		/* END TEST */
 
 
 
@@ -136,6 +189,7 @@ angular.module('myTodoAngularApp')
 		$scope.doneTodoSortBy = 'duedate';
 		$scope.isEditingTodo = false;
 		$scope.showDoneTodos = false;
+		$scope.currentCategory = '';
 
 		/* 
 		TODO Model:
@@ -149,26 +203,32 @@ angular.module('myTodoAngularApp')
 
 		// Load initial todos from appropriate source
 		if (supportsLocalStorage) {
-			$scope.todos = JSON.parse(localStorage.getItem('myTodos'));
-			$scope.doneTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
+			$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
+			$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
+			$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
+			$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
 		}
 		else {
 			var myTodosCookie = getCookie('myTodos');
 			var myDoneTodosCookie = getCookie('myDoneTodos');
 			if (myTodosCookie !== undefined) {
 				// Decode Base64 encryption
-				$scope.todos = JSON.parse(window.atob(myTodosCookie));
+				$scope.categoricalTodos = JSON.parse(window.atob(myTodosCookie));
+				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
 			}
 			if (myDoneTodosCookie !== undefined) {
 				// Decode Base64 encryption
-				$scope.doneTodos = JSON.parse(window.atob(myDoneTodosCookie));
+				$scope.doneCategoricalTodos = JSON.parse(window.atob(myDoneTodosCookie));
+				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
 			}
 		}
 		// In case nothing was loaded, initialize empty arrays
 		if ($scope.todos === null || $scope.todos === undefined) {
+			$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
 			$scope.todos = [];
 		}
 		if ($scope.doneTodos === null || $scope.doneTodos === undefined) {
+			$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
 			$scope.doneTodos = [];
 		}
 		// Set the baseline for the todo item IDs
@@ -199,6 +259,7 @@ angular.module('myTodoAngularApp')
 			// Add a new todo to the end of the todos array
 			$scope.todos[$scope.todos.length] = {
 				id: ++$scope.currentMaxId,
+				category: $scope.currentCategory,
 				description: $scope.newTodoText,
 				// For some reason, I couldn't get ng-model to work on the duedate.
 				// MOST LIKELY CAUSE: I don't understand how Angular $scope works.
@@ -214,6 +275,7 @@ angular.module('myTodoAngularApp')
 			resetInputs();
 		};
 
+		// Readd a todo to the normal list from the "done todos" one
 		$scope.reAddTodo = function(index) {
 			if (index > -1) {
 				var todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
