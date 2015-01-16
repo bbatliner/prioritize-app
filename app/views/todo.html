@@ -69,7 +69,7 @@
 <hr class="dark">
 <!-- end divider between sections -->
 </div>
-<!-- end ng-if -->
+<!-- end ng-show -->
 
 <!-- TODO SORT DROPDOWN -->
 <form class="form-horizontal">
@@ -116,7 +116,7 @@
 		visibleTodos (for use outside the ng-repeat) and tracked by the id field in the todo.
 		Phew!
 	-->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | filter:{category: currentCategory} | orderBy: todoSortBy as visibleTodos track by todo.id">
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | filter:{category: currentCategory}:categoryComparator | orderBy: todoSortBy as visibleTodos track by todo.id">
 
 		<!-- checkbox for item -->
 		<span class="input-group-btn full-height" ng-if="!isEditing">
@@ -143,13 +143,13 @@
 			<div class="row" ng-hide="isEditing">
 
 				<!-- description -->
-				<div class="col-sm-8 no-padding-left word-wrap">
+				<div class="col-sm-7 no-padding-left word-wrap">
 					{{todo.description}}
 				</div>
 				<!-- end description -->
 
 				<!-- badges -->
-				<div class="col-sm-4 no-padding-right">
+				<div class="col-sm-5 no-padding-right">
 
 					<!-- edit button -->
 					<span class="pull-right icon-button">
@@ -168,6 +168,12 @@
 						{{todo.priority}}
 					</span>
 					<!-- end priority badge -->
+
+					<!-- category badge, if viewing all todos -->
+					<span class="badge todo-badge category-badge pull-right" ng-show="currentCategory == ''">
+						{{todo.category}}
+					</span>
+					<!-- end category badge -->
 
 				</div>
 				<!-- end badges -->
@@ -278,7 +284,7 @@
 	<!-- end no todos placeholder -->
 
 	<!-- done todo items -->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | filter:{ category: currentCategory } | orderBy: doneTodoSortBy as visibleDoneTodos track by todo.id">
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | filter:{ category: currentCategory }:true | orderBy: doneTodoSortBy as visibleDoneTodos track by todo.id">
 
 		<!-- arrow move back up -->
 		<span class="input-group-btn full-height" ng-hide="isEditing">

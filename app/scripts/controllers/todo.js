@@ -12,8 +12,12 @@ angular.module('myTodoAngularApp')
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
-				localStorage.setItem('myTodos', JSON.stringify(compressCategoricalTodos($scope.todos)));
-				localStorage.setItem('myDoneTodos', JSON.stringify(compressCategoricalTodos($scope.doneTodos)));
+				var compressedTodos = compressCategoricalTodos($scope.todos);
+				var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
+				localStorage.setItem('myTodos', JSON.stringify(todosToSave));
+				var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
+				var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
+				localStorage.setItem('myDoneTodos', JSON.stringify(doneTodosToSave));
 			}
 		}
 
@@ -60,6 +64,25 @@ angular.module('myTodoAngularApp')
 			}
 
 			return compressedTodos;
+		}
+
+		// Take empty categories in the emptyCategories organized array and put them 
+		// in the already-organized categoricalTodos array, but only if they don't exist already
+		function mergeEmptyCategories(categoricalTodos, emptyCategories) {
+			for (var i = 0; i < emptyCategories.categories.length; i++) {
+				var currentCategory = emptyCategories.categories[i];
+				var categoryExists = false;
+				for (var j = 0; j < categoricalTodos.categories.length; j++) {
+					if (currentCategory.name === categoricalTodos.categories[j].name) {
+						categoryExists = true;
+						break;
+					}
+				}
+				if (!categoryExists) {
+					categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
+				}
+			}
+			return categoricalTodos;
 		}
 
 		// Hide the edit todo UI
@@ -177,6 +200,21 @@ angular.module('myTodoAngularApp')
 
 
 		/* * * START CONTROLLER FUNCTIONS * * */
+
+		// Comparator for category filter in ng-repeat
+		$scope.categoryComparator = function(expected, actual) {
+			console.log('Expected: ' + expected);
+			console.log('Actual: ' + actual);
+
+			// Allow anything to go through the filter if the empty string is the current filter
+			// This lets the 'All' tab work correctly
+			if (actual === '') {
+				return true;
+			}
+			else {
+				return angular.equals(actual, expected);
+			}
+		};
 
 		// Change category
 		$scope.newCategory = function() {
