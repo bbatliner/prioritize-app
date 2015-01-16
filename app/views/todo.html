@@ -3,11 +3,14 @@
 <!-- todo categories nav tabs -->
 <ul id="categoryTabs" class="nav nav-tabs" style="margin-bottom: 10px">
   <li class="active"><a href="" ng-click="changeCategory('')" data-toggle="tab">All</a></li>
-  <li ng-repeat="category in testTodos.categories"><a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a></li>
-  <li><a href="" data-toggle="tab"><i class="glyphicon glyphicon-plus"></i></a></li>
+  <li ng-repeat="category in categoricalTodos.categories"><a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a></li>
+  <li><a href="" ng-click="newCategory()"><i class="glyphicon glyphicon-plus"></i></a></li>
 </ul>
 <!-- end todo categories nav tabs -->
 
+<!-- hide new todos if category isn't selected -->
+<!-- in other words, the 'All' tab is meant for viewing, not adding -->
+<div ng-show="currentCategory != ''">
 <!-- new task label -->
 <form class="form-horizontal" style="margin-top: 10px; margin-bottom:-5px;">
 	<div class="form-group">
@@ -58,12 +61,15 @@
 </div>
 <!-- end new task input form -->
 
+
 <!-- END NEW TODO ITEM INPUT -->
 
 
 <!-- divider between sections -->
 <hr class="dark">
 <!-- end divider between sections -->
+</div>
+<!-- end ng-if -->
 
 <!-- TODO SORT DROPDOWN -->
 <form class="form-horizontal">
@@ -110,7 +116,7 @@
 		visibleTodos (for use outside the ng-repeat) and tracked by the id field in the todo.
 		Phew!
 	-->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in testMyTodos | filter:{category: currentCategory} | orderBy: todoSortBy as visibleTodos track by todo.id">
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in todos | filter:{category: currentCategory} | orderBy: todoSortBy as visibleTodos track by todo.id">
 
 		<!-- checkbox for item -->
 		<span class="input-group-btn full-height" ng-if="!isEditing">
@@ -232,7 +238,7 @@
 
 		<!-- label for todo list -->
 		<label class="col-sm-3 control-label" style="text-align:left;">
-			Done Todos ({{doneTodos.length}})
+			Done Todos ({{visibleDoneTodos.length}})
 			<span class="icon-button">
 				<i ng-class="getShowDoneTodosIconClass()" ng-click="toggleShowDoneTodos()"></i>
 			</span>
@@ -263,17 +269,16 @@
 
 
 <!-- DONE TODO LIST -->
-<div id="todoList" ng-if="showDoneTodos">
+<div id="todoList" ng-show="showDoneTodos">
 
 	<!-- no todos placeholder -->
-	<div class="well" ng-if="doneTodos.length == 0">
+	<div class="well" ng-if="visibleDoneTodos.length == 0">
 		<span>You haven't finished any todos! Add some and complete them!</span>
 	</div>
 	<!-- end no todos placeholder -->
 
 	<!-- done todo items -->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | orderBy: doneTodoSortBy track by todo.id">
-
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | filter:{ category: currentCategory } | orderBy: doneTodoSortBy as visibleDoneTodos track by todo.id">
 
 		<!-- arrow move back up -->
 		<span class="input-group-btn full-height" ng-hide="isEditing">

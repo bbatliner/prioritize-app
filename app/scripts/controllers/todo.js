@@ -1,6 +1,7 @@
-// Prevent JSHint from linting jQuery and noty
+// Prevent JSHint from linting JS libraries
 /*global $:false */
 /*global noty:false */
+/*global bootbox:false */
 'use strict';
 
 angular.module('myTodoAngularApp')
@@ -13,10 +14,6 @@ angular.module('myTodoAngularApp')
 			if (supportsLocalStorage) {
 				localStorage.setItem('myTodos', JSON.stringify(compressCategoricalTodos($scope.todos)));
 				localStorage.setItem('myDoneTodos', JSON.stringify(compressCategoricalTodos($scope.doneTodos)));
-			}
-			// Use Base64 encryption for cookie todos
-			else {
-				document.cookie = 'myTodos=' + window.btoa(JSON.stringify(compressCategoricalTodos($scope.todos))) + ';myDoneTodos=' + window.btoa(JSON.stringify(compressCategoricalTodos($scope.doneTodos)));
 			}
 		}
 
@@ -99,77 +96,25 @@ angular.module('myTodoAngularApp')
 			return maxId;
 		}
 
-		// function getCurrentMaxId2(todos, doneTodos) {
-		// 	var maxId = 0;
-		// 	for (var i = 0; i < todos.categories.length; i++) {
-		// 		for (var j = 0; j < todos.categories[i].todos.length; j++) {
-		// 			var myTodo = todos.categories[i].todos[j];
-		// 			if (myTodo.id > maxId) {
-		// 				maxId = myTodo.id;
-		// 			}
-		// 		}
-		// 	}
-		// 	// Search in done todos
-		// 	for (var k = 0; k < doneTodos.categories.length; k++) {
-		// 		for (var l = 0; l < doneTodos.categories[k].todos.length; l++) {
-		// 			var myDoneTodo = doneTodos.categories[k].todos[l];
-		// 			if (myDoneTodo.id > maxId) {
-		// 				maxId = myDoneTodo.id;
-		// 			}
-		// 		}
-		// 	}
-		// 	return maxId;
-		// }
-
-		// Get cookie from document.cookie *by name*
-		function getCookie(name) {
-			var value = '; ' + document.cookie;
-			var parts = value.split('; ' + name + '=');
-			if (parts.length === 2) {
-				return parts.pop().split(';').shift();
-			}
-		}
-
 		function daysBetween(date1, date2) {
-		  // One day in milliseconds
-		  var msDay = 1000 * 60 * 60 * 24;
+			// One day in milliseconds
+			var msDay = 1000 * 60 * 60 * 24;
 
-		  // Convert both dates to milliseconds
-		  var msDate1 = date1.getTime();
-		  var msDate2 = date2.getTime();
+			// Convert both dates to milliseconds
+			var msDate1 = date1.getTime();
+			var msDate2 = date2.getTime();
 
-		  // Calculate the difference in milliseconds
-		  var msDifference = msDate2 - msDate1;
-		    
-		  // Convert back to days and return
-		  return Math.round(msDifference / msDay); 
+			// Calculate the difference in milliseconds
+			var msDifference = msDate2 - msDate1;
+		
+			// Convert back to days and return
+			return Math.round(msDifference / msDay); 
 		}
-
-		$('#categoryTabs a').click(function(e) {
-		  e.preventDefault();
-		  $(this).tab('show');
-		});
 
 		/* * * END LOCAL FUNCTIONS * * */
 
 
 		/* * * START INITIALIZATION CODE * * */
-
-		/* TEST */
-		$scope.testTodos = JSON.parse('{ "categories": [ { "name": "School", "todos": [ { "id": 1, "description": "Finish project", "duedate": "2015-01-15T06:00:00.000Z", "priority": "2" }, { "id": 2, "description": "Do homework!", "duedate": "2015-01-20T06:00:00.000Z", "priority": "1" } ] }, { "name": "Work", "todos": [ { "id": 4, "description": "Talk to boss", "duedate": "2015-01-25T06:00:00.000Z", "priority": "2" } ] } ] }');
-		
-		console.log($scope.testTodos);
-
-		$scope.testMyTodos = extractCategoricalTodos($scope.testTodos);
-		console.log($scope.testMyTodos);
-		$scope.compressedTodos = compressCategoricalTodos($scope.testMyTodos);
-		console.log($scope.compressedTodos);
-		console.log(extractCategoricalTodos($scope.compressedTodos));
-
-		// console.log(getCurrentMaxId2($scope.testTodos, $scope.testTodos));
-		/* END TEST */
-
-
 
 		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
 
@@ -177,7 +122,7 @@ angular.module('myTodoAngularApp')
 		// If browser supports localStorage, store todos there
 		// otherwise the default storage is cookies
 		if(typeof(Storage) !== 'undefined') {
-			supportsLocalStorage = false;
+			supportsLocalStorage = true;
 		}
 
 		// Models for input fields for new todo item
@@ -203,41 +148,64 @@ angular.module('myTodoAngularApp')
 
 		// Load initial todos from appropriate source
 		if (supportsLocalStorage) {
-			$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
-			$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
-			$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
-			$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
-		}
-		else {
-			var myTodosCookie = getCookie('myTodos');
-			var myDoneTodosCookie = getCookie('myDoneTodos');
-			if (myTodosCookie !== undefined) {
-				// Decode Base64 encryption
-				$scope.categoricalTodos = JSON.parse(window.atob(myTodosCookie));
+			if (localStorage.getItem('myTodos') !== null) {
+				$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
 				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
 			}
-			if (myDoneTodosCookie !== undefined) {
-				// Decode Base64 encryption
-				$scope.doneCategoricalTodos = JSON.parse(window.atob(myDoneTodosCookie));
+			else {
+				$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
+				$scope.todos = [];
+			}
+			if (localStorage.getItem('myDoneTodos') !== null) {
+				$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
 				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
 			}
+			else {
+				$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
+				$scope.doneTodos = [];
+			}
 		}
-		// In case nothing was loaded, initialize empty arrays
-		if ($scope.todos === null || $scope.todos === undefined) {
-			$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
-			$scope.todos = [];
-		}
-		if ($scope.doneTodos === null || $scope.doneTodos === undefined) {
-			$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
-			$scope.doneTodos = [];
-		}
+
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();
+
+		console.log($scope.categoricalTodos);
+		console.log($scope.doneCategoricalTodos);
+		console.log($scope.currentMaxId);
 
 		/* * * END INITIALIZATION CODE * * */
 
 
 		/* * * START CONTROLLER FUNCTIONS * * */
+
+		// Change category
+		$scope.newCategory = function() {
+			bootbox.prompt('What\'s the name of this category?', function(result) {
+				if (result !== null) {
+					if (result === '') {
+						noty({ type: 'error', text: 'Category title cannot be empty!', timeout: 1000 });
+					}
+					var newCategoryName = result;
+					var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
+
+					// Push the new category to the array
+					$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = newCategory;
+
+					// Update current category to the current
+					$scope.currentCategory = newCategoryName;
+
+					// Refresh the scope (and the ng-repeats!)
+					$scope.$apply();
+
+					// Update the active tab in the UI
+					$('#categoryTabs li:last').prev().find('a').tab('show');
+
+					// Save todos
+					saveTodos();
+				}
+			});
+
+		};
 
 		// Add a new todo item
 		$scope.addNewTodo = function() {
