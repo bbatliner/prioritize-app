@@ -220,7 +220,7 @@ angular.module('myTodoAngularApp')
 			bootbox.prompt('What\'s the name of this project?', function(result) {
 				if (result !== null) {
 					if (result === '') {
-						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1200 });
 						return;
 					}
 					var newCategoryName = result;
@@ -228,7 +228,7 @@ angular.module('myTodoAngularApp')
 					// Verify this category name is unique
 					for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
 						if ($scope.categoricalTodos.categories[i].name === newCategoryName) {
-							noty({ type: 'error', text: 'Project title already exists!', timeout: 1000 });
+							noty({ type: 'error', text: 'Project title already exists!', timeout: 1200 });
 							return;
 						}
 					}
@@ -260,37 +260,45 @@ angular.module('myTodoAngularApp')
 			bootbox.prompt('What\'s the new name for the ' + category + ' project?', function(result) {
 				if (result !== null) {
 					if (result === '') {
-						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1200 });
+						return;
 					}
-					else {
-						// Rename todos in single array
-						for (var i = 0; i < $scope.todos.length; i++) {
-							if ($scope.todos[i].category === category) {
-								$scope.todos[i].category = result;
-							}
+
+					// Verify the new name is unique
+					for (var h = 0; h < $scope.categoricalTodos.categories.length; h++) {
+						if ($scope.categoricalTodos.categories[h].name === result) {
+							noty({ type: 'error', text: 'Project title already exists!', timeout: 1200 });
+							return;
 						}
-
-						// Rename category in categorical array
-						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
-							if ($scope.categoricalTodos.categories[j].name === category) {
-								$scope.categoricalTodos.categories[j].name = result;
-							}
-						}
-
-						// Refresh the scope (and the ng-repeats!)
-						$scope.$apply();
-
-						// Save todos
-						saveTodos();
-
-						// Manually click the tab to refresh it - ugly, but it works
-						var currentCategories = [];
-						$('#categoryTabs li a').each(function() {
-							currentCategories.push($(this).text());
-						});
-						var indexOfTab = currentCategories.indexOf(result);
-						$('#categoryTabs li:eq(' + indexOfTab + ')').find('a').click();
 					}
+
+					// Rename todos in single array
+					for (var i = 0; i < $scope.todos.length; i++) {
+						if ($scope.todos[i].category === category) {
+							$scope.todos[i].category = result;
+						}
+					}
+
+					// Rename category in categorical array
+					for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+						if ($scope.categoricalTodos.categories[j].name === category) {
+							$scope.categoricalTodos.categories[j].name = result;
+						}
+					}
+
+					// Refresh the scope (and the ng-repeats!)
+					$scope.$apply();
+
+					// Save todos
+					saveTodos();
+
+					// Manually click the tab to refresh it - ugly, but it works
+					var currentCategories = [];
+					$('#categoryTabs li a').each(function() {
+						currentCategories.push($(this).text());
+					});
+					var indexOfTab = currentCategories.indexOf(result);
+					$('#categoryTabs li:eq(' + indexOfTab + ')').find('a').click();
 				}
 			});
 		};
@@ -358,15 +366,15 @@ angular.module('myTodoAngularApp')
 
 			// Validate inputs
 			if ($scope.newTodoText === '') {
-				noty({ type: 'error', text: 'Description cannot be blank!', timeout: 1000 });
+				noty({ type: 'error', text: 'Description cannot be blank!', timeout: 1200 });
 				return;
 			}
 			else if ($scope.newTodoPriority === '') {
-				noty({ type: 'error', text: 'Priority must be set!', timeout: 1000 });
+				noty({ type: 'error', text: 'Priority must be set!', timeout: 1200 });
 				return;
 			}
 			else if ($('#newTodoDate').val() === '') {
-				noty({ type: 'error', text: 'Due date must be set!', timeout: 1000 });
+				noty({ type: 'error', text: 'Due date must be set!', timeout: 1200 });
 				return;
 			}
 
