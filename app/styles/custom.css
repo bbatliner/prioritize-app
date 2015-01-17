@@ -1,7 +1,7 @@
 body {
 	/* ALways show the scroll bar; helps window width
 	   stay constant when navigating between views */
-	overflow: scroll;
+	overflow: scroll !important;
 }
 
 .word-wrap {
@@ -115,6 +115,11 @@ body {
 	margin-bottom: -1px;
 }
 
+.category-tools {
+	margin-top: -11px;
+	padding: 9px;
+}
+
 .todo-item {
 	margin-bottom: -1px;
 }
@@ -149,12 +154,16 @@ body {
 	margin-left: 2px;
 }
 
+.date-badge {
+	width: 100px;
+}
+
 .date-badge:hover {
 	background-color: #777;
 }
 
 .category-badge {
-	width: 75px;
+	/*width: 75px;*/
 	background-color: #000;
 }
 

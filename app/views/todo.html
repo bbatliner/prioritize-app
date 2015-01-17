@@ -11,63 +11,84 @@
 <!-- hide new todos if category isn't selected -->
 <!-- in other words, the 'All' tab is meant for viewing, not adding -->
 <div ng-show="currentCategory != ''">
-<!-- new task label -->
-<form class="form-horizontal" style="margin-top: 10px; margin-bottom:-5px;">
-	<div class="form-group">
-		<label class="col-sm-12 control-label" style="text-align: left">Add new todo <span class="small">(<a href="#/help">confused?</a>)</span></label>
+
+	<!-- category tools (delete, rename, etc.) -->
+	<div class="small category-tools">
+		<span>
+			<a href ng-click="removeCategory(currentCategory)" style="text-decoration:none">
+				<i class="glyphicon glyphicon-trash"></i>
+				Remove
+			</a>
+		</span>
+		|
+		<span>
+			<a href ng-click="renameCategory(currentCategory)" style="text-decoration:none">
+				<i class="glyphicon glyphicon-font"></i>
+				Rename
+			</a>
+		</span>
 	</div>
-</form>
-<!-- end new task label -->
+	<!-- end category tools -->
 
-<!-- new task input form -->
-<div class="jumbotron-small">
-	<div class="input-group full-width">
-
-		<!-- description input -->
-		<div class="col-sm-6 no-padding">
-			<input class="form-control" ng-model="newTodoText" type="text" placeholder="New todo description">
+	<!-- new task label -->
+	<form class="form-horizontal" style="margin-top: 10px; margin-bottom:-5px;">
+		<div class="form-group">
+			<label class="col-sm-12 control-label" style="text-align: left">
+				Add new todo <span class="small">(<a href="#/help">confused?</a>)</span>
+			</label>
 		</div>
-		<!-- end description input -->
+	</form>
+	<!-- end new task label -->
 
-		<!-- priority dropdown -->
-		<div class="col-sm-2 no-padding">
-			<select class="form-control" ng-model="newTodoPriority">
-				<option value="" disabled selected class="hidden">Priority</option>
-				<option value="1">High</option>
-				<option value="2">Medium</option>
-				<option value="3">Low</option>
-			</select>
-		</div>
-		<!-- end priority dropdown -->
+	<!-- new task input form -->
+	<div class="jumbotron-small">
+		<div class="input-group full-width">
 
-		<!-- due date selector -->
-		<div class="col-sm-3 no-padding">
-			<input class="form-control" id="newTodoDate" type="date" ng-if="inputTypeDateSupported">
-			<input class="form-control" id="newTodoDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
-		</div>
-		<!-- end due date selector -->
-
-		<!-- add button --> <!-- float: left is for Firefox on a small (phone + tablet) viewport -->
-		<div class="col-sm-1 no-padding" style="float: left">
-			<div class="input-group-btn">
-				<button class="btn btn-default full-width" type="button" ng-click="addNewTodo()">
-					<i class="glyphicon glyphicon-plus"></i>
-				</button>
+			<!-- description input -->
+			<div class="col-sm-6 no-padding">
+				<input class="form-control" ng-model="newTodoText" type="text" placeholder="New todo description">
 			</div>
+			<!-- end description input -->
+
+			<!-- priority dropdown -->
+			<div class="col-sm-2 no-padding">
+				<select class="form-control" ng-model="newTodoPriority">
+					<option value="" disabled selected class="hidden">Priority</option>
+					<option value="1">High</option>
+					<option value="2">Medium</option>
+					<option value="3">Low</option>
+				</select>
+			</div>
+			<!-- end priority dropdown -->
+
+			<!-- due date selector -->
+			<div class="col-sm-3 no-padding">
+				<input class="form-control" id="newTodoDate" type="date" ng-if="inputTypeDateSupported">
+				<input class="form-control" id="newTodoDate" placeholder="mm/dd/yyyy &#9662;" ui-date ng-if="!inputTypeDateSupported">
+			</div>
+			<!-- end due date selector -->
+
+			<!-- add button --> <!-- float: left is for Firefox on a small (phone + tablet) viewport -->
+			<div class="col-sm-1 no-padding" style="float: left">
+				<div class="input-group-btn">
+					<button class="btn btn-default full-width" type="button" ng-click="addNewTodo()">
+						<i class="glyphicon glyphicon-plus"></i>
+					</button>
+				</div>
+			</div>
+			<!-- end add button -->
+
 		</div>
-		<!-- end add button -->
-
 	</div>
-</div>
-<!-- end new task input form -->
+	<!-- end new task input form -->
 
 
-<!-- END NEW TODO ITEM INPUT -->
+	<!-- END NEW TODO ITEM INPUT -->
 
 
-<!-- divider between sections -->
-<hr class="dark">
-<!-- end divider between sections -->
+	<!-- divider between sections -->
+	<hr class="dark">
+	<!-- end divider between sections -->
 </div>
 <!-- end ng-show -->
 
@@ -86,7 +107,9 @@
 		<!-- end label for todo list -->
 
 		<!-- "sort by" dropdown -->
-		<label for="sort" class="col-sm-2 col-sm-offset-3 control-label" style="padding-right:0px; font-weight: normal">Sort by:</label>
+		<label for="sort" class="col-sm-2 col-sm-offset-3 control-label" style="padding-right:0px; font-weight: normal">
+			Sort by:
+		</label>
 		<div class="col-sm-3">
 			<select id="sort" class="form-control" ng-model="todoSortBy">
 				<option value="description">Alphabetical</option>
@@ -143,13 +166,13 @@
 			<div class="row" ng-hide="isEditing">
 
 				<!-- description -->
-				<div class="col-sm-7 no-padding-left word-wrap">
+				<div class="no-padding-left word-wrap" ng-class="{ 'col-sm-8': currentCategory != '', 'col-sm-6': currentCategory == '' }">
 					{{todo.description}}
 				</div>
 				<!-- end description -->
 
 				<!-- badges -->
-				<div class="col-sm-5 no-padding-right">
+				<div class="no-padding-right" ng-class="{ 'col-sm-4': currentCategory != '', 'col-sm-6': currentCategory == '' }">
 
 					<!-- edit button -->
 					<span class="pull-right icon-button">
@@ -158,7 +181,7 @@
 					<!-- end edit button -->
 
 					<!-- date badge -->
-					<span class="badge todo-badge date-badge pull-right" style="width:108px">
+					<span class="badge todo-badge date-badge pull-right">
 						{{getDateString(todo.duedate)}}
 					</span>
 					<!-- end date badge -->
@@ -171,7 +194,7 @@
 
 					<!-- category badge, if viewing all todos -->
 					<span class="badge todo-badge category-badge pull-right" ng-show="currentCategory == ''">
-						{{todo.category}}
+						{{todo.category.trunc(20)}}
 					</span>
 					<!-- end category badge -->
 

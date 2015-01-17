@@ -9,6 +9,12 @@ angular.module('myTodoAngularApp')
 
 		/* * * LOCAL FUNCTIONS * * */
 
+		// Define a truncate function
+		String.prototype.trunc = String.prototype.trunc ||
+			function(n){
+				return this.length>n ? this.substr(0,n-1)+'...' : this;
+			};
+
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
@@ -41,8 +47,8 @@ angular.module('myTodoAngularApp')
 		}
 
 		// Compress a single array of todos (with categories properties) into organized categories
-		// KNOWN BUGS: The category of the todo is still stored in the todo object, even though it is contained
-		// in a specific category object. Something with array references and the `delete` keyword
+		// Quirky behavior: the category of the todo is left in the todo object, even though it is contained
+		// in a `category` object with a name
 		function compressCategoricalTodos(todos) {
 			var compressedTodos = JSON.parse('{ "categories": [] }');
 			var usedCategories = [];
@@ -192,10 +198,6 @@ angular.module('myTodoAngularApp')
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();
 
-		console.log($scope.categoricalTodos);
-		console.log($scope.doneCategoricalTodos);
-		console.log($scope.currentMaxId);
-
 		/* * * END INITIALIZATION CODE * * */
 
 
@@ -203,9 +205,6 @@ angular.module('myTodoAngularApp')
 
 		// Comparator for category filter in ng-repeat
 		$scope.categoryComparator = function(expected, actual) {
-			console.log('Expected: ' + expected);
-			console.log('Actual: ' + actual);
-
 			// Allow anything to go through the filter if the empty string is the current filter
 			// This lets the 'All' tab work correctly
 			if (actual === '') {
@@ -216,33 +215,118 @@ angular.module('myTodoAngularApp')
 			}
 		};
 
-		// Change category
+		// New category
 		$scope.newCategory = function() {
 			bootbox.prompt('What\'s the name of this category?', function(result) {
 				if (result !== null) {
 					if (result === '') {
 						noty({ type: 'error', text: 'Category title cannot be empty!', timeout: 1000 });
 					}
-					var newCategoryName = result;
-					var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
+					else {
+						var newCategoryName = result;
+						var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
 
-					// Push the new category to the array
-					$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = newCategory;
+						// Push the new category to the array
+						$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = newCategory;
 
-					// Update current category to the current
-					$scope.currentCategory = newCategoryName;
+						// Update current category to the current
+						$scope.currentCategory = newCategoryName;
 
-					// Refresh the scope (and the ng-repeats!)
-					$scope.$apply();
+						// Refresh the scope (and the ng-repeats!)
+						$scope.$apply();
 
-					// Update the active tab in the UI
-					$('#categoryTabs li:last').prev().find('a').tab('show');
+						// Update the active tab in the UI
+						$('#categoryTabs li:last').prev().find('a').tab('show');
 
-					// Save todos
-					saveTodos();
+						// Save todos
+						saveTodos();
+					}
 				}
 			});
+		};
 
+		// Rename a category
+		$scope.renameCategory = function(category) {
+			bootbox.prompt('What\'s the new name for the ' + category + ' category?', function(result) {
+				if (result !== null) {
+					if (result === '') {
+						noty({ type: 'error', text: 'Category title cannot be empty!', timeout: 1000 });
+					}
+					else {
+						// Rename todos in single array
+						for (var i = 0; i < $scope.todos.length; i++) {
+							if ($scope.todos[i].category === category) {
+								$scope.todos[i].category = result;
+							}
+						}
+
+						// Rename category in categorical array
+						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+							if ($scope.categoricalTodos.categories[j].name === category) {
+								$scope.categoricalTodos.categories[j].name = result;
+							}
+						}
+
+						// Refresh the scope (and the ng-repeats!)
+						$scope.$apply();
+
+						// Save todos
+						saveTodos();
+
+						// Manually click the tab to refresh it - ugly, but it works
+						var currentCategories = [];
+						$('#categoryTabs li a').each(function() {
+							currentCategories.push($(this).text());
+						});
+						var indexOfTab = currentCategories.indexOf(result);
+						$('#categoryTabs li:eq(' + indexOfTab + ')').find('a').click();
+					}
+				}
+			});
+		};
+
+		// Remove a category
+		$scope.removeCategory = function(category) {
+			bootbox.confirm('Are you sure want to delete the ' + category + ' category? Any todos in this category will also be deleted.', function(result) {
+					if (result) {
+						// Store the tab before this that will become active when this one is deleted
+						var currentCategories = [];
+						$('#categoryTabs li a').each(function() {
+							currentCategories.push($(this).text());
+						});
+						var indexOfNextTabToShow = currentCategories.indexOf(category) - 1;
+
+						// Remove todos from single array
+						for (var i = 0; i < $scope.todos.length; i++) {
+							if ($scope.todos[i].category === category) {
+								$scope.todos.splice(i);
+							}
+						}
+
+						// Remove category from categorical array
+						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+							if ($scope.categoricalTodos.categories[j].name === category) {
+								$scope.categoricalTodos.categories.splice(j);
+							}
+						}
+
+						// Refresh the scope (and any ng-repeats!)
+						$scope.$apply();
+
+						// Save todos
+						saveTodos();
+
+						// Update the active tab in the UI
+						var nextTabAnchor = $('#categoryTabs li:eq(' + indexOfNextTabToShow + ')').find('a');
+						nextTabAnchor.tab('show');
+						nextTabAnchor.click();
+					}
+			});
+		};
+
+		// Change current category of visible todos
+		$scope.changeCategory = function(category) { 
+			$scope.currentCategory = category;
 		};
 
 		// Add a new todo item
@@ -321,11 +405,6 @@ angular.module('myTodoAngularApp')
 
 			// Save todos
 			saveTodos();
-		};
-
-		// Change current category of visible todos
-		$scope.changeCategory = function(category) { 
-			$scope.currentCategory = category;
 		};
 
 		// Show UI for editing a todo
