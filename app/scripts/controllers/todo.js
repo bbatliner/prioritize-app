@@ -217,41 +217,50 @@ angular.module('myTodoAngularApp')
 
 		// New category
 		$scope.newCategory = function() {
-			bootbox.prompt('What\'s the name of this category?', function(result) {
+			bootbox.prompt('What\'s the name of this project?', function(result) {
 				if (result !== null) {
 					if (result === '') {
-						noty({ type: 'error', text: 'Category title cannot be empty!', timeout: 1000 });
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
+						return;
 					}
-					else {
-						var newCategoryName = result;
-						var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
+					var newCategoryName = result;
 
-						// Push the new category to the array
-						$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = angular.copy(newCategory);
-						$scope.doneCategoricalTodos.categories[$scope.doneCategoricalTodos.categories.length] = angular.copy(newCategory);
-
-						// Update current category to the current
-						$scope.currentCategory = newCategoryName;
-
-						// Refresh the scope (and the ng-repeats!)
-						$scope.$apply();
-
-						// Update the active tab in the UI
-						$('#categoryTabs li:last').prev().find('a').tab('show');
-
-						// Save todos
-						saveTodos();
+					// Verify this category name is unique
+					for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+						if ($scope.categoricalTodos.categories[i].name === newCategoryName) {
+							noty({ type: 'error', text: 'Project title already exists!', timeout: 1000 });
+							return;
+						}
 					}
+
+					// Construct the JSON template for the new category
+					var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
+
+					// Push the new category to the array
+					$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = angular.copy(newCategory);
+					$scope.doneCategoricalTodos.categories[$scope.doneCategoricalTodos.categories.length] = angular.copy(newCategory);
+
+					// Update current category to the current
+					$scope.currentCategory = newCategoryName;
+
+					// Refresh the scope (and the ng-repeats!)
+					$scope.$apply();
+
+					// Update the active tab in the UI
+					$('#categoryTabs li:last').prev().find('a').tab('show');
+
+					// Save todos
+					saveTodos();
 				}
 			});
 		};
 
 		// Rename a category
 		$scope.renameCategory = function(category) {
-			bootbox.prompt('What\'s the new name for the ' + category + ' category?', function(result) {
+			bootbox.prompt('What\'s the new name for the ' + category + ' project?', function(result) {
 				if (result !== null) {
 					if (result === '') {
-						noty({ type: 'error', text: 'Category title cannot be empty!', timeout: 1000 });
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
 					}
 					else {
 						// Rename todos in single array
@@ -288,7 +297,7 @@ angular.module('myTodoAngularApp')
 
 		// Remove a category
 		$scope.removeCategory = function(category) {
-			bootbox.confirm('Are you sure want to delete the ' + category + ' category? Any todos in this category will also be deleted.', function(result) {
+			bootbox.confirm('Are you sure want to delete the ' + category + ' project? Any todos (unfinished or not) in this project will also be deleted.', function(result) {
 					if (result) {
 						// Store the tab before this that will become active when this one is deleted
 						var currentCategories = [];
