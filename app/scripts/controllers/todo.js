@@ -18,12 +18,12 @@ angular.module('myTodoAngularApp')
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
-				var compressedTodos = compressCategoricalTodos($scope.todos);
-				var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
-				localStorage.setItem('myTodos', JSON.stringify(todosToSave));
-				var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
-				var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
-				localStorage.setItem('myDoneTodos', JSON.stringify(doneTodosToSave));
+				// var compressedTodos = compressCategoricalTodos($scope.todos);
+				// var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
+				localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
+				// var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
+				// var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
+				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
 			}
 		}
 
@@ -46,50 +46,50 @@ angular.module('myTodoAngularApp')
 			return extractedTodos;
 		}
 
-		// Compress a single array of todos (with categories properties) into organized categories
-		// Quirky behavior: the category of the todo is left in the todo object, even though it is contained
-		// in a `category` object with a name
-		function compressCategoricalTodos(todos) {
-			var compressedTodos = JSON.parse('{ "categories": [] }');
-			var usedCategories = [];
+		// // Compress a single array of todos (with categories properties) into organized categories
+		// // Quirky behavior: the category of the todo is left in the todo object, even though it is contained
+		// // in a `category` object with a name
+		// function compressCategoricalTodos(todos) {
+		// 	var compressedTodos = JSON.parse('{ "categories": [] }');
+		// 	var usedCategories = [];
 
-			for (var i = 0; i < todos.length; i++) {
-				var currentTodo = todos[i];
-				var todoCategory = currentTodo.category;
-				if ($.inArray(todoCategory, usedCategories) === -1) {
-					usedCategories[usedCategories.length] = todoCategory;
-					var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
-					for (var j = 0; j < todos.length; j++) {
-						var currentTodoToCheck = todos.slice()[j];
-						if (currentTodoToCheck.category === todoCategory) {
-							newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
-						}
-					}
-					compressedTodos.categories[compressedTodos.categories.length] = newCategory;
-				}
-			}
+		// 	for (var i = 0; i < todos.length; i++) {
+		// 		var currentTodo = todos[i];
+		// 		var todoCategory = currentTodo.category;
+		// 		if ($.inArray(todoCategory, usedCategories) === -1) {
+		// 			usedCategories[usedCategories.length] = todoCategory;
+		// 			var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
+		// 			for (var j = 0; j < todos.length; j++) {
+		// 				var currentTodoToCheck = todos.slice()[j];
+		// 				if (currentTodoToCheck.category === todoCategory) {
+		// 					newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
+		// 				}
+		// 			}
+		// 			compressedTodos.categories[compressedTodos.categories.length] = angular.copy(newCategory);
+		// 		}
+		// 	}
 
-			return compressedTodos;
-		}
+		// 	return compressedTodos;
+		// }
 
-		// Take empty categories in the emptyCategories organized array and put them 
-		// in the already-organized categoricalTodos array, but only if they don't exist already
-		function mergeEmptyCategories(categoricalTodos, emptyCategories) {
-			for (var i = 0; i < emptyCategories.categories.length; i++) {
-				var currentCategory = emptyCategories.categories[i];
-				var categoryExists = false;
-				for (var j = 0; j < categoricalTodos.categories.length; j++) {
-					if (currentCategory.name === categoricalTodos.categories[j].name) {
-						categoryExists = true;
-						break;
-					}
-				}
-				if (!categoryExists) {
-					categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
-				}
-			}
-			return categoricalTodos;
-		}
+		// // Take empty categories in the emptyCategories organized array and put them 
+		// // in the already-organized categoricalTodos array, but only if they don't exist already
+		// function mergeEmptyCategories(categoricalTodos, emptyCategories) {
+		// 	for (var i = 0; i < emptyCategories.categories.length; i++) {
+		// 		var currentCategory = emptyCategories.categories[i];
+		// 		var categoryExists = false;
+		// 		for (var j = 0; j < categoricalTodos.categories.length; j++) {
+		// 			if (currentCategory.name === categoricalTodos.categories[j].name) {
+		// 				categoryExists = true;
+		// 				break;
+		// 			}
+		// 		}
+		// 		if (!categoryExists) {
+		// 			categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
+		// 		}
+		// 	}
+		// 	return categoricalTodos;
+		// }
 
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
@@ -227,7 +227,8 @@ angular.module('myTodoAngularApp')
 						var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
 
 						// Push the new category to the array
-						$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = newCategory;
+						$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = angular.copy(newCategory);
+						$scope.doneCategoricalTodos.categories[$scope.doneCategoricalTodos.categories.length] = angular.copy(newCategory);
 
 						// Update current category to the current
 						$scope.currentCategory = newCategoryName;
@@ -299,14 +300,28 @@ angular.module('myTodoAngularApp')
 						// Remove todos from single array
 						for (var i = 0; i < $scope.todos.length; i++) {
 							if ($scope.todos[i].category === category) {
-								$scope.todos.splice(i);
+								$scope.todos.splice(i, 1);
 							}
 						}
 
 						// Remove category from categorical array
 						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
 							if ($scope.categoricalTodos.categories[j].name === category) {
-								$scope.categoricalTodos.categories.splice(j);
+								$scope.categoricalTodos.categories.splice(j, 1);
+							}
+						}
+
+						// Remove done todos from single array
+						for (var k = 0; k < $scope.doneTodos.length; k++) {
+							if ($scope.doneTodos[k].category === category) {
+								$scope.doneTodos.splice(k, 1);
+							}
+						}
+
+						// Remove done category from done categorical array
+						for (var l = 0; l < $scope.doneCategoricalTodos.categories.length; l++) {
+							if ($scope.doneCategoricalTodos.categories[l].name === category) {
+								$scope.doneCategoricalTodos.categories.splice(l, 1);
 							}
 						}
 
@@ -346,8 +361,7 @@ angular.module('myTodoAngularApp')
 				return;
 			}
 
-			// Add a new todo to the end of the todos array
-			$scope.todos[$scope.todos.length] = {
+			var newTodo = {
 				id: ++$scope.currentMaxId,
 				category: $scope.currentCategory,
 				description: $scope.newTodoText,
@@ -358,6 +372,17 @@ angular.module('myTodoAngularApp')
 				priority: $scope.newTodoPriority
 			};
 
+			// Add a new todo to the end of the todos array
+			$scope.todos[$scope.todos.length] = newTodo;
+
+			// Add a new todo to the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				if (currentCategory.name === $scope.currentCategory) {
+					currentCategory.todos[currentCategory.todos.length] = newTodo;
+				}
+			}
+
 			// Save todos
 			saveTodos();
 
@@ -367,9 +392,26 @@ angular.module('myTodoAngularApp')
 
 		// Readd a todo to the normal list from the "done todos" one
 		$scope.reAddTodo = function(index) {
+			// Readd the todo to the single todos array
+			var todoToReAdd;
 			if (index > -1) {
-				var todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
+				todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
 				$scope.todos[$scope.todos.length] = todoToReAdd;
+			}
+
+			// Readd the todo to the categorical todo array
+			for (var i = 0; i < $scope.doneCategoricalTodos.categories.length; i++) {
+				var currentDoneCategory = $scope.doneCategoricalTodos.categories[i];
+				var indexOfDoneTodo = currentDoneCategory.todos.indexOf(todoToReAdd);
+				if (indexOfDoneTodo !== -1) {
+					currentDoneCategory.todos.splice(indexOfDoneTodo, 1);
+				}
+			}
+			for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+				var currentCategory = $scope.categoricalTodos.categories[j];
+				if (currentCategory.name === todoToReAdd.category) {
+					currentCategory.todos[currentCategory.todos.length] = todoToReAdd;
+				}
 			}
 
 			// Save todos
@@ -378,9 +420,26 @@ angular.module('myTodoAngularApp')
 
 		// Finish a todo item
 		$scope.finishTodo = function(index) {
+			// Move the single todo to the doneTodos array
+			var doneTodo;
 			if (index > -1) {
-				var doneTodo = $scope.todos.splice(index, 1)[0];
+				doneTodo = $scope.todos.splice(index, 1)[0];
 				$scope.doneTodos[$scope.doneTodos.length] = doneTodo;
+			}
+
+			// Move the todo between the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(doneTodo);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
+			}
+			for (var j = 0; j < $scope.doneCategoricalTodos.categories.length; j++) {
+				var currentDoneCategory = $scope.doneCategoricalTodos.categories[j];
+				if (currentDoneCategory.name === doneTodo.category) {
+					currentDoneCategory.todos[currentDoneCategory.todos.length] = doneTodo;
+				}
 			}
 
 			// Save todos
@@ -389,8 +448,19 @@ angular.module('myTodoAngularApp')
 
 		// Remove a todo item from the todo list
 		$scope.deleteUnfinishedTodo = function(index) {
+			// Remove the todo from the single todos array
+			var todoToDelete;
 			if (index > -1) {
-				$scope.todos.splice(index, 1);
+				todoToDelete = $scope.todos.splice(index, 1)[0];
+			}
+
+			// Remove the todo from the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(todoToDelete);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
 			}
 
 			// Save todos
@@ -399,8 +469,19 @@ angular.module('myTodoAngularApp')
 
 		// Remove a todo item from the done list
 		$scope.deleteTodo = function(index) {
+			// Remove the todo from the single done todos array
+			var doneTodoToDelete;
 			if (index > -1) {
-				$scope.doneTodos.splice(index, 1);
+				doneTodoToDelete = $scope.doneTodos.splice(index, 1)[0];
+			}
+
+			// Remove the done todo from the done categories array
+			for (var i = 0; i < $scope.doneCategoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.doneCategoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(doneTodoToDelete);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
 			}
 
 			// Save todos

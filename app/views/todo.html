@@ -15,16 +15,16 @@
 	<!-- category tools (delete, rename, etc.) -->
 	<div class="small category-tools">
 		<span>
-			<a href ng-click="removeCategory(currentCategory)" style="text-decoration:none">
-				<i class="glyphicon glyphicon-trash"></i>
-				Remove
+			<a href ng-click="renameCategory(currentCategory)" style="text-decoration:none">
+				<i class="glyphicon glyphicon-font"></i>
+				Rename
 			</a>
 		</span>
 		|
 		<span>
-			<a href ng-click="renameCategory(currentCategory)" style="text-decoration:none">
-				<i class="glyphicon glyphicon-font"></i>
-				Rename
+			<a href ng-click="removeCategory(currentCategory)" style="text-decoration:none">
+				<i class="glyphicon glyphicon-trash"></i>
+				Remove
 			</a>
 		</span>
 	</div>
@@ -97,8 +97,13 @@
 	<div class="form-group">
 
 		<!-- label for todo list -->
-		<label class="col-sm-3 control-label" style="text-align:left;">
-			Todo List ({{visibleTodos.length}})
+		<label class="col-sm-6 control-label" style="text-align:left;">
+			<span ng-show="currentCategory == ''">
+				All Todos ({{visibleTodos.length}})
+			</span>
+			<span ng-show="currentCategory != ''">
+				{{currentCategory}} Todos ({{visibleTodos.length}})
+			</span>
 		</label>
 		<div class="col-sm-1">
 			<!-- Include an invisible input so that "Todo List" and "Sort by:" get placed on separate lines on mobile devices -->
@@ -107,7 +112,7 @@
 		<!-- end label for todo list -->
 
 		<!-- "sort by" dropdown -->
-		<label for="sort" class="col-sm-2 col-sm-offset-3 control-label" style="padding-right:0px; font-weight: normal">
+		<label for="sort" class="col-sm-2 control-label" style="padding-right:0px; font-weight: normal">
 			Sort by:
 		</label>
 		<div class="col-sm-3">
@@ -166,13 +171,13 @@
 			<div class="row" ng-hide="isEditing">
 
 				<!-- description -->
-				<div class="no-padding-left word-wrap" ng-class="{ 'col-sm-8': currentCategory != '', 'col-sm-6': currentCategory == '' }">
+				<div class="no-padding-left word-wrap" ng-class="currentCategory == '' ? 'col-sm-6': 'col-sm-8'">
 					{{todo.description}}
 				</div>
 				<!-- end description -->
 
 				<!-- badges -->
-				<div class="no-padding-right" ng-class="{ 'col-sm-4': currentCategory != '', 'col-sm-6': currentCategory == '' }">
+				<div class="no-padding-right" ng-class="currentCategory == '' ? 'col-sm-6' : 'col-sm-4'">
 
 					<!-- edit button -->
 					<span class="pull-right icon-button">
@@ -266,8 +271,13 @@
 	<div class="form-group">
 
 		<!-- label for todo list -->
-		<label class="col-sm-3 control-label" style="text-align:left;">
-			Done Todos ({{visibleDoneTodos.length}})
+		<label class="col-sm-6 control-label" style="text-align:left;">
+			<span ng-show="currentCategory == ''">
+				All Done Todos ({{visibleDoneTodos.length}})
+			</span>
+			<span ng-show="currentCategory != ''">
+				{{currentCategory}} Done Todos ({{visibleDoneTodos.length}})
+			</span>
 			<span class="icon-button">
 				<i ng-class="getShowDoneTodosIconClass()" ng-click="toggleShowDoneTodos()"></i>
 			</span>
@@ -280,7 +290,7 @@
 
 		<!-- "sort by" dropdown -->
 		<div ng-if="showDoneTodos">
-			<label for="sort" class="col-sm-2 col-sm-offset-3 control-label" style="padding-right:0px; font-weight: normal">Sort by:</label>
+			<label for="sort" class="col-sm-2 control-label" style="padding-right:0px; font-weight: normal">Sort by:</label>
 			<div class="col-sm-3">
 				<!-- inside an ng-if, so we need to get to the parent scope to access doneTodoSortBy -->
 				<select id="sort" class="form-control" ng-model="$parent.doneTodoSortBy">
@@ -307,7 +317,7 @@
 	<!-- end no todos placeholder -->
 
 	<!-- done todo items -->
-	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | filter:{ category: currentCategory }:true | orderBy: doneTodoSortBy as visibleDoneTodos track by todo.id">
+	<div class="input-group todo-item full-width full-height" ng-repeat="todo in doneTodos | filter:{ category: currentCategory }:categoryComparator | orderBy: doneTodoSortBy as visibleDoneTodos track by todo.id">
 
 		<!-- arrow move back up -->
 		<span class="input-group-btn full-height" ng-hide="isEditing">
@@ -325,13 +335,13 @@
 			<div class="row" ng-hide="isEditing">
 
 				<!-- description -->
-				<div class="col-sm-8 no-padding-left word-wrap">
+				<div class="no-padding-left word-wrap" ng-class="currentCategory == '' ? 'col-sm-6' : 'col-sm-8'">
 					{{todo.description}}
 				</div>
 				<!-- end description -->
 
 				<!-- badges -->
-				<div class="col-sm-4 no-padding-right">
+				<div class="no-padding-right" ng-class="currentCategory == '' ? 'col-sm-6' : 'col-sm-4'">
 
 					<!-- delete button -->
 					<span class="pull-right icon-button">
@@ -340,7 +350,7 @@
 					<!-- end delete button -->
 
 					<!-- date badge -->
-					<span class="badge todo-badge date-badge pull-right" style="width:108px">
+					<span class="badge todo-badge date-badge pull-right">
 						{{getFormattedDateString(todo.duedate)}}
 					</span>
 					<!-- end date badge -->
@@ -350,6 +360,12 @@
 						{{todo.priority}}
 					</span>
 					<!-- end priority badge -->
+
+					<!-- category badge, if viewing all todos -->
+					<span class="badge todo-badge category-badge pull-right" ng-show="currentCategory == ''">
+						{{todo.category.trunc(20)}}
+					</span>
+					<!-- end category badge -->
 
 				</div>
 				<!-- end badges -->
