@@ -1,7 +1,7 @@
 body {
 	/* ALways show the scroll bar; helps window width
 	   stay constant when navigating between views */
-	overflow: scroll;
+	overflow: scroll !important;
 }
 
 .word-wrap {
@@ -106,13 +106,18 @@ body {
 	box-shadow: inset 0px 0px 0px 1px #ccc;
 }
 
-#todoList {
+.todoList {
 	min-height: 60px;
 }
-#todoList .well {
+.todoList .well {
 	padding-top: 8px;
 	padding-bottom: 8px;
 	margin-bottom: -1px;
+}
+
+.category-tools {
+	margin-top: -11px;
+	padding: 9px;
 }
 
 .todo-item {
@@ -149,8 +154,17 @@ body {
 	margin-left: 2px;
 }
 
+.date-badge {
+	width: 108px;
+}
+
 .date-badge:hover {
 	background-color: #777;
+}
+
+.category-badge {
+	/*width: 75px;*/
+	background-color: #000;
 }
 
 .footer {

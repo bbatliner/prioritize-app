@@ -1,6 +1,7 @@
-// Prevent JSHint from linting jQuery and noty
+// Prevent JSHint from linting JS libraries
 /*global $:false */
 /*global noty:false */
+/*global bootbox:false */
 'use strict';
 
 angular.module('myTodoAngularApp')
@@ -8,17 +9,87 @@ angular.module('myTodoAngularApp')
 
 		/* * * LOCAL FUNCTIONS * * */
 
+		// Define a truncate function
+		String.prototype.trunc = String.prototype.trunc ||
+			function(n){
+				return this.length>n ? this.substr(0,n-1)+'...' : this;
+			};
+
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
-				localStorage.setItem('myTodos', JSON.stringify($scope.todos));
-				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneTodos));
-			}
-			// Use Base64 encryption for cookie todos
-			else {
-				document.cookie = 'myTodos=' + window.btoa(JSON.stringify($scope.todos)) + ';myDoneTodos=' + window.btoa(JSON.stringify($scope.doneTodos));
+				// var compressedTodos = compressCategoricalTodos($scope.todos);
+				// var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
+				localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
+				// var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
+				// var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
+				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
 			}
 		}
+
+		// Extract todos in the nested categorical model to a single array
+		function extractCategoricalTodos(todos) {
+			// Initialize the empty array to hold all of the todos
+			var extractedTodos = [];
+			// foreach category
+			for (var i = 0; i < todos.categories.length; i++) {
+				var category = todos.categories[i];
+				// foreach todo in the category
+				for (var j = 0; j < category.todos.length; j++) {
+					var todo = category.todos[j];
+					// Store the todo's category in itself
+					todo.category = category.name;
+					// Add it to the extracted array
+					extractedTodos[extractedTodos.length] = todo;
+				}
+			}
+			return extractedTodos;
+		}
+
+		// // Compress a single array of todos (with categories properties) into organized categories
+		// // Quirky behavior: the category of the todo is left in the todo object, even though it is contained
+		// // in a `category` object with a name
+		// function compressCategoricalTodos(todos) {
+		// 	var compressedTodos = JSON.parse('{ "categories": [] }');
+		// 	var usedCategories = [];
+
+		// 	for (var i = 0; i < todos.length; i++) {
+		// 		var currentTodo = todos[i];
+		// 		var todoCategory = currentTodo.category;
+		// 		if ($.inArray(todoCategory, usedCategories) === -1) {
+		// 			usedCategories[usedCategories.length] = todoCategory;
+		// 			var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
+		// 			for (var j = 0; j < todos.length; j++) {
+		// 				var currentTodoToCheck = todos.slice()[j];
+		// 				if (currentTodoToCheck.category === todoCategory) {
+		// 					newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
+		// 				}
+		// 			}
+		// 			compressedTodos.categories[compressedTodos.categories.length] = angular.copy(newCategory);
+		// 		}
+		// 	}
+
+		// 	return compressedTodos;
+		// }
+
+		// // Take empty categories in the emptyCategories organized array and put them 
+		// // in the already-organized categoricalTodos array, but only if they don't exist already
+		// function mergeEmptyCategories(categoricalTodos, emptyCategories) {
+		// 	for (var i = 0; i < emptyCategories.categories.length; i++) {
+		// 		var currentCategory = emptyCategories.categories[i];
+		// 		var categoryExists = false;
+		// 		for (var j = 0; j < categoricalTodos.categories.length; j++) {
+		// 			if (currentCategory.name === categoricalTodos.categories[j].name) {
+		// 				categoryExists = true;
+		// 				break;
+		// 			}
+		// 		}
+		// 		if (!categoryExists) {
+		// 			categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
+		// 		}
+		// 	}
+		// 	return categoricalTodos;
+		// }
 
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
@@ -54,28 +125,19 @@ angular.module('myTodoAngularApp')
 			return maxId;
 		}
 
-		// Get cookie from document.cookie *by name*
-		function getCookie(name) {
-			var value = '; ' + document.cookie;
-			var parts = value.split('; ' + name + '=');
-			if (parts.length === 2) {
-				return parts.pop().split(';').shift();
-			}
-		}
-
 		function daysBetween(date1, date2) {
-		  // One day in milliseconds
-		  var msDay = 1000 * 60 * 60 * 24;
+			// One day in milliseconds
+			var msDay = 1000 * 60 * 60 * 24;
 
-		  // Convert both dates to milliseconds
-		  var msDate1 = date1.getTime();
-		  var msDate2 = date2.getTime();
+			// Convert both dates to milliseconds
+			var msDate1 = date1.getTime();
+			var msDate2 = date2.getTime();
 
-		  // Calculate the difference in milliseconds
-		  var msDifference = msDate2 - msDate1;
-		    
-		  // Convert back to days and return
-		  return Math.round(msDifference / msDay); 
+			// Calculate the difference in milliseconds
+			var msDifference = msDate2 - msDate1;
+		
+			// Convert back to days and return
+			return Math.round(msDifference / msDay); 
 		}
 
 		/* * * END LOCAL FUNCTIONS * * */
@@ -101,6 +163,7 @@ angular.module('myTodoAngularApp')
 		$scope.doneTodoSortBy = 'duedate';
 		$scope.isEditingTodo = false;
 		$scope.showDoneTodos = false;
+		$scope.currentCategory = '';
 
 		/* 
 		TODO Model:
@@ -114,28 +177,24 @@ angular.module('myTodoAngularApp')
 
 		// Load initial todos from appropriate source
 		if (supportsLocalStorage) {
-			$scope.todos = JSON.parse(localStorage.getItem('myTodos'));
-			$scope.doneTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
-		}
-		else {
-			var myTodosCookie = getCookie('myTodos');
-			var myDoneTodosCookie = getCookie('myDoneTodos');
-			if (myTodosCookie !== undefined) {
-				// Decode Base64 encryption
-				$scope.todos = JSON.parse(window.atob(myTodosCookie));
+			if (localStorage.getItem('myTodos') !== null) {
+				$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
+				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
 			}
-			if (myDoneTodosCookie !== undefined) {
-				// Decode Base64 encryption
-				$scope.doneTodos = JSON.parse(window.atob(myDoneTodosCookie));
+			else {
+				$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
+				$scope.todos = [];
+			}
+			if (localStorage.getItem('myDoneTodos') !== null) {
+				$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
+				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
+			}
+			else {
+				$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
+				$scope.doneTodos = [];
 			}
 		}
-		// In case nothing was loaded, initialize empty arrays
-		if ($scope.todos === null || $scope.todos === undefined) {
-			$scope.todos = [];
-		}
-		if ($scope.doneTodos === null || $scope.doneTodos === undefined) {
-			$scope.doneTodos = [];
-		}
+
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();
 
@@ -144,7 +203,157 @@ angular.module('myTodoAngularApp')
 
 		/* * * START CONTROLLER FUNCTIONS * * */
 
-		// Add a new todo itme
+		// Comparator for category filter in ng-repeat
+		$scope.categoryComparator = function(expected, actual) {
+			// Allow anything to go through the filter if the empty string is the current filter
+			// This lets the 'All' tab work correctly
+			if (actual === '') {
+				return true;
+			}
+			else {
+				return angular.equals(actual, expected);
+			}
+		};
+
+		// New category
+		$scope.newCategory = function() {
+			bootbox.prompt('What\'s the name of this project?', function(result) {
+				if (result !== null) {
+					if (result === '') {
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
+						return;
+					}
+					var newCategoryName = result;
+
+					// Verify this category name is unique
+					for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+						if ($scope.categoricalTodos.categories[i].name === newCategoryName) {
+							noty({ type: 'error', text: 'Project title already exists!', timeout: 1000 });
+							return;
+						}
+					}
+
+					// Construct the JSON template for the new category
+					var newCategory = JSON.parse('{ "name": \"' + newCategoryName + '\", "todos": [] }');
+
+					// Push the new category to the array
+					$scope.categoricalTodos.categories[$scope.categoricalTodos.categories.length] = angular.copy(newCategory);
+					$scope.doneCategoricalTodos.categories[$scope.doneCategoricalTodos.categories.length] = angular.copy(newCategory);
+
+					// Update current category to the current
+					$scope.currentCategory = newCategoryName;
+
+					// Refresh the scope (and the ng-repeats!)
+					$scope.$apply();
+
+					// Update the active tab in the UI
+					$('#categoryTabs li:last').prev().find('a').tab('show');
+
+					// Save todos
+					saveTodos();
+				}
+			});
+		};
+
+		// Rename a category
+		$scope.renameCategory = function(category) {
+			bootbox.prompt('What\'s the new name for the ' + category + ' project?', function(result) {
+				if (result !== null) {
+					if (result === '') {
+						noty({ type: 'error', text: 'Project title cannot be empty!', timeout: 1000 });
+					}
+					else {
+						// Rename todos in single array
+						for (var i = 0; i < $scope.todos.length; i++) {
+							if ($scope.todos[i].category === category) {
+								$scope.todos[i].category = result;
+							}
+						}
+
+						// Rename category in categorical array
+						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+							if ($scope.categoricalTodos.categories[j].name === category) {
+								$scope.categoricalTodos.categories[j].name = result;
+							}
+						}
+
+						// Refresh the scope (and the ng-repeats!)
+						$scope.$apply();
+
+						// Save todos
+						saveTodos();
+
+						// Manually click the tab to refresh it - ugly, but it works
+						var currentCategories = [];
+						$('#categoryTabs li a').each(function() {
+							currentCategories.push($(this).text());
+						});
+						var indexOfTab = currentCategories.indexOf(result);
+						$('#categoryTabs li:eq(' + indexOfTab + ')').find('a').click();
+					}
+				}
+			});
+		};
+
+		// Remove a category
+		$scope.removeCategory = function(category) {
+			bootbox.confirm('Are you sure want to delete the ' + category + ' project? Any todos (unfinished or not) in this project will also be deleted.', function(result) {
+					if (result) {
+						// Store the tab before this that will become active when this one is deleted
+						var currentCategories = [];
+						$('#categoryTabs li a').each(function() {
+							currentCategories.push($(this).text());
+						});
+						var indexOfNextTabToShow = currentCategories.indexOf(category) - 1;
+
+						// Remove todos from single array
+						for (var i = 0; i < $scope.todos.length; i++) {
+							if ($scope.todos[i].category === category) {
+								$scope.todos.splice(i, 1);
+							}
+						}
+
+						// Remove category from categorical array
+						for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+							if ($scope.categoricalTodos.categories[j].name === category) {
+								$scope.categoricalTodos.categories.splice(j, 1);
+							}
+						}
+
+						// Remove done todos from single array
+						for (var k = 0; k < $scope.doneTodos.length; k++) {
+							if ($scope.doneTodos[k].category === category) {
+								$scope.doneTodos.splice(k, 1);
+							}
+						}
+
+						// Remove done category from done categorical array
+						for (var l = 0; l < $scope.doneCategoricalTodos.categories.length; l++) {
+							if ($scope.doneCategoricalTodos.categories[l].name === category) {
+								$scope.doneCategoricalTodos.categories.splice(l, 1);
+							}
+						}
+
+						// Refresh the scope (and any ng-repeats!)
+						$scope.$apply();
+
+						// Save todos
+						saveTodos();
+
+						// Update the active tab in the UI
+						var nextTabAnchor = $('#categoryTabs li:eq(' + indexOfNextTabToShow + ')').find('a');
+						nextTabAnchor.tab('show');
+						nextTabAnchor.click();
+					}
+			});
+		};
+
+		// Change current category of visible todos
+		$scope.changeCategory = function(category) { 
+			$scope.currentCategory = category;
+		};
+
+		// Add a new todo item
 		$scope.addNewTodo = function() {
 
 			// Validate inputs
@@ -161,9 +370,9 @@ angular.module('myTodoAngularApp')
 				return;
 			}
 
-			// Add a new todo to the end of the todos array
-			$scope.todos[$scope.todos.length] = {
+			var newTodo = {
 				id: ++$scope.currentMaxId,
+				category: $scope.currentCategory,
 				description: $scope.newTodoText,
 				// For some reason, I couldn't get ng-model to work on the duedate.
 				// MOST LIKELY CAUSE: I don't understand how Angular $scope works.
@@ -172,6 +381,17 @@ angular.module('myTodoAngularApp')
 				priority: $scope.newTodoPriority
 			};
 
+			// Add a new todo to the end of the todos array
+			$scope.todos[$scope.todos.length] = newTodo;
+
+			// Add a new todo to the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				if (currentCategory.name === $scope.currentCategory) {
+					currentCategory.todos[currentCategory.todos.length] = newTodo;
+				}
+			}
+
 			// Save todos
 			saveTodos();
 
@@ -179,10 +399,28 @@ angular.module('myTodoAngularApp')
 			resetInputs();
 		};
 
+		// Readd a todo to the normal list from the "done todos" one
 		$scope.reAddTodo = function(index) {
+			// Readd the todo to the single todos array
+			var todoToReAdd;
 			if (index > -1) {
-				var todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
+				todoToReAdd = $scope.doneTodos.splice(index, 1)[0];
 				$scope.todos[$scope.todos.length] = todoToReAdd;
+			}
+
+			// Readd the todo to the categorical todo array
+			for (var i = 0; i < $scope.doneCategoricalTodos.categories.length; i++) {
+				var currentDoneCategory = $scope.doneCategoricalTodos.categories[i];
+				var indexOfDoneTodo = currentDoneCategory.todos.indexOf(todoToReAdd);
+				if (indexOfDoneTodo !== -1) {
+					currentDoneCategory.todos.splice(indexOfDoneTodo, 1);
+				}
+			}
+			for (var j = 0; j < $scope.categoricalTodos.categories.length; j++) {
+				var currentCategory = $scope.categoricalTodos.categories[j];
+				if (currentCategory.name === todoToReAdd.category) {
+					currentCategory.todos[currentCategory.todos.length] = todoToReAdd;
+				}
 			}
 
 			// Save todos
@@ -191,9 +429,26 @@ angular.module('myTodoAngularApp')
 
 		// Finish a todo item
 		$scope.finishTodo = function(index) {
+			// Move the single todo to the doneTodos array
+			var doneTodo;
 			if (index > -1) {
-				var doneTodo = $scope.todos.splice(index, 1)[0];
+				doneTodo = $scope.todos.splice(index, 1)[0];
 				$scope.doneTodos[$scope.doneTodos.length] = doneTodo;
+			}
+
+			// Move the todo between the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(doneTodo);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
+			}
+			for (var j = 0; j < $scope.doneCategoricalTodos.categories.length; j++) {
+				var currentDoneCategory = $scope.doneCategoricalTodos.categories[j];
+				if (currentDoneCategory.name === doneTodo.category) {
+					currentDoneCategory.todos[currentDoneCategory.todos.length] = doneTodo;
+				}
 			}
 
 			// Save todos
@@ -202,8 +457,19 @@ angular.module('myTodoAngularApp')
 
 		// Remove a todo item from the todo list
 		$scope.deleteUnfinishedTodo = function(index) {
+			// Remove the todo from the single todos array
+			var todoToDelete;
 			if (index > -1) {
-				$scope.todos.splice(index, 1);
+				todoToDelete = $scope.todos.splice(index, 1)[0];
+			}
+
+			// Remove the todo from the categories array
+			for (var i = 0; i < $scope.categoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.categoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(todoToDelete);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
 			}
 
 			// Save todos
@@ -212,8 +478,19 @@ angular.module('myTodoAngularApp')
 
 		// Remove a todo item from the done list
 		$scope.deleteTodo = function(index) {
+			// Remove the todo from the single done todos array
+			var doneTodoToDelete;
 			if (index > -1) {
-				$scope.doneTodos.splice(index, 1);
+				doneTodoToDelete = $scope.doneTodos.splice(index, 1)[0];
+			}
+
+			// Remove the done todo from the done categories array
+			for (var i = 0; i < $scope.doneCategoricalTodos.categories.length; i++) {
+				var currentCategory = $scope.doneCategoricalTodos.categories[i];
+				var indexOfTodo = currentCategory.todos.indexOf(doneTodoToDelete);
+				if (indexOfTodo !== -1) {
+					currentCategory.todos.splice(indexOfTodo, 1);
+				}
 			}
 
 			// Save todos
