@@ -10,7 +10,7 @@
 
 <!-- hide new todos if category isn't selected -->
 <!-- in other words, the 'All' tab is meant for viewing, not adding -->
-<div ng-show="currentCategory != ''">
+<div ng-show="currentCategory != ''" class="category-specifics">
 
 	<!-- category tools (delete, rename, etc.) -->
 	<div class="small category-tools">
@@ -129,7 +129,7 @@
 <!-- END TODO SORT DROPDOWN -->
 
 <!-- TODO LIST -->
-<div id="todoList">
+<div class="todoList">
 
 	<!-- no todos placeholder -->
 	<div id="placeholder" class="well" ng-if="visibleTodos.length == 0">
@@ -308,7 +308,7 @@
 
 
 <!-- DONE TODO LIST -->
-<div id="todoList" ng-show="showDoneTodos">
+<div class="todoList" ng-show="showDoneTodos">
 
 	<!-- no todos placeholder -->
 	<div class="well" ng-if="visibleDoneTodos.length == 0">

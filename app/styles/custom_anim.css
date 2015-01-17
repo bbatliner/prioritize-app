@@ -1,10 +1,44 @@
 .todo-item.ng-enter {
-	-webkit-transition: 0.5s ease-out all;
-	-moz-transition: 0.5s ease-out all;
-	-o-transition: 0.5s ease-out all;
-	transition: 0.5s ease-out all;
+	-webkit-transition: all 0.5s ease-out;
+	transition: all 0.5s ease-out;
 	opacity: 0;
 }
 .todo-item.ng-enter.ng-enter-active {
 	opacity: 1;
+}
+/*.todo-item.ng-leave {
+	-webkit-transition: all 0.5s ease-in;
+	transition: all 0.5s ease-in;
+	opacity: 1;
+}
+.todo-item.ng-leave.ng-leave-active {
+	opacity: 0;
+}*/
+
+.category-specifics {
+	overflow: hidden;
+}
+.category-specifics.ng-hide-add {
+	animation: 0.5s slideUpCategorySpecifics ease-in-out;
+}
+.category-specifics.ng-hide-remove {
+	animation: 0.5s slideDownCategorySpecifics ease-in-out;
+}
+@-webkit-keyframes slideDownCategorySpecifics {
+	0% { max-height: 0px; }
+	100% { max-height: 165px; }
+}
+
+@keyframes slideDownCategorySpecifics {
+	0% { max-height: 0px; }
+	100% { max-height: 165px; }
+}
+@-webkit-keyframes slideUpCategorySpecifics {
+	0% { max-height: 165px;	}
+	100% { max-height: 0px; }
+}
+
+@keyframes slideUpCategorySpecifics {
+	0% { max-height: 165px;	}
+	100% { max-height: 0px; }
 }
