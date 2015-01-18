@@ -1,6 +1,6 @@
 // Define directory constants
 global.serveDir    = __dirname + '/dist';
-global.scriptsDir  = __dirname + '/node_scripts';
+global.scriptsDir  = __dirname + '/my_node_modules';
 
 // Require dependencies
 var gzippo         = require('gzippo');
@@ -11,7 +11,7 @@ var mandrill       = require('mandrill-api/mandrill');
 var InputValidator = require(global.scriptsDir + '/InputValidator.js');
 
 // Configure dependencies
-var MandrillClient = new mandrill.Mandrill(process.env.MANDRILL_API_KEY);
+var MandrillClient = require('./config/mandrill.js')(mandrill);
 var Mail           = require(global.scriptsDir + '/Mail.js')(InputValidator, MandrillClient);
 
 // Setup Express server
