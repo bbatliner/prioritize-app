@@ -9,7 +9,7 @@ module.exports = function(app, Mail) {
 	// POST ==========================
 	
 	// Send feedback
-	app.post('/api/send-feedback' , Mail.sendFeedback);
+	app.post('/api/send-feedback', Mail.sendFeedback);
 
 
 	// ===============================
