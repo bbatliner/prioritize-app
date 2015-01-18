@@ -1,33 +1,28 @@
-// Define directory constants (as module vars)
-module.serveDir = __dirname + '/dist';
-module.scriptsDir = __dirname + '/node_scripts';
+// Define directory constants
+global.serveDir    = __dirname + '/dist';
+global.scriptsDir  = __dirname + '/node_scripts';
 
-// Require server dependencies
-var gzippo = require('gzippo');
-var express = require('express');
-var morgan = require('morgan');
-var bodyParser = require('body-parser');
+// Require dependencies
+var gzippo         = require('gzippo');
+var express        = require('express');
+var morgan         = require('morgan');
+var bodyParser     = require('body-parser');
+var mandrill       = require('mandrill-api/mandrill');
+var InputValidator = require(global.scriptsDir + '/InputValidator.js');
 
-// Setup module variables
-module.mandrill = require('mandrill-api/mandrill');
-module.mandrill_client = new module.mandrill.Mandrill(process.env.MANDRILL_API_KEY);
+// Configure dependencies
+var MandrillClient = new mandrill.Mandrill(process.env.MANDRILL_API_KEY);
+var Mail           = require(global.scriptsDir + '/Mail.js')(InputValidator, MandrillClient);
 
-// Setup server
+// Setup Express server
 var app = express();
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-// Require modules
-var Mail = require(module.scriptsDir + '/Mail.js');
-
-// Define API endpoints
-app.post('/api/send-feedback' , Mail.sendFeedback);
-
-// Serve index.html
 app.use(morgan('dev'));
-app.use(gzippo.staticGzip('' + module.serveDir));
-app.listen(process.env.PORT || 5000);
+app.use(gzippo.staticGzip('' + global.serveDir));
 
-app.get('/', function(req, res) {
-	res.sendFile(module.serveDir + '/index.html');
-});
+// Routes
+require('./app/routes.js')(app, Mail);
+
+// Launch server
+app.listen(process.env.PORT || 5000);

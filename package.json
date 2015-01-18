@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "dependencies": {
     "body-parser": "^1.10.0",
-    "bootbox": "^4.3.0",
     "express": "^4.10.4",
     "gzippo": "^0.2.0",
     "mandrill-api": "^1.0.41",
