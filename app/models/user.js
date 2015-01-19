@@ -1,5 +1,31 @@
 'use strict';
 
-var bcrypt = require('bcrypt-nodejs');
+var mongoose  = require('mongoose');
+var bcrypt    = require('bcrypt-nodejs');
 
-module.exports = {};
+
+// Schema =============================
+
+var userSchema = mongoose.Schema({
+	firstName:       String,
+	lastName:        String,
+	email:           String,
+	password:        String
+});
+
+
+// Methods ============================
+
+// Hash password
+userSchema.methods.hashPassword = function(password) {
+	return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
+};
+
+// Validate password
+userSchema.methods.isValidPassword = function(password) {
+	return bcrypt.compareSync(password, this.password);
+};
+
+
+// Expose model to application
+module.exports = mongoose.model('User', userSchema);
