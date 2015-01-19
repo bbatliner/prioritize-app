@@ -1,6 +1,13 @@
 'use strict';
 
-module.exports = function(app, Mail) {
+var Mail           = require(global.scriptsDir + '/Mail.js');
+
+// var mongoose       = require('mongoose');
+// var db             = require(global.rootDir + '/config/mongoose.js')(mongoose);
+// var Models         = require(global.rootDir + '/app/models/models.js');
+
+
+module.exports = function(app) {
 
 	// ===============================
 	// API Endpoints =================

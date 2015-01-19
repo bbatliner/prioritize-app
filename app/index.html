@@ -132,7 +132,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="sendFeedback()">Send feedback</button>
+                        <button type="button" class="btn btn-primary" onclick="sendFeedback()" id="submitFeedbackButton">Send feedback</button>
                     </div>
                 </div>
             </div>
@@ -215,6 +215,10 @@
                 message: $('#feedbackFeedback').val()
             };
 
+            // Set the submit button to a loader GIF
+            var oldContent = $('#submitFeedbackButton').html();
+            $('#submitFeedbackButton').html('<img src="images/ajax-loader.gif" width="16" height="16">');
+
             $.post('/api/send-feedback', email)
                 .done(function(data) {
                     noty({ type: 'success', text: 'Thank you for leaving your feedback!', timeout: 1500 });
@@ -225,6 +229,10 @@
                 })
                 .error(function(data) {                
                     noty({ type: 'error', text: 'Error ' + data.responseJSON.status + ': ' + data.responseJSON.error, timeout: 1500 });
+                })
+                .always(function() {
+                    // Set the submit button back to its old content
+                    $('#submitFeedbackButton').html(oldContent);
                 });
         }
     </script>

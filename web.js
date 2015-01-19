@@ -1,4 +1,5 @@
 // Define directory constants
+global.rootDir     = __dirname;
 global.serveDir    = __dirname + '/dist';
 global.scriptsDir  = __dirname + '/my_node_modules';
 
@@ -7,12 +8,6 @@ var gzippo         = require('gzippo');
 var express        = require('express');
 var morgan         = require('morgan');
 var bodyParser     = require('body-parser');
-var mandrill       = require('mandrill-api/mandrill');
-var InputValidator = require(global.scriptsDir + '/InputValidator.js');
-
-// Configure dependencies
-var MandrillClient = require('./config/mandrill.js')(mandrill);
-var Mail           = require(global.scriptsDir + '/Mail.js')(InputValidator, MandrillClient);
 
 // Setup Express server
 var app = express();
@@ -22,7 +17,7 @@ app.use(morgan('dev'));
 app.use(gzippo.staticGzip('' + global.serveDir));
 
 // Routes
-require('./app/routes.js')(app, Mail);
+require('./app/routes.js')(app);
 
 // Launch server
 app.listen(process.env.PORT || 5000);
