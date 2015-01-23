@@ -585,6 +585,15 @@ angular.module('myTodoAngularApp')
 					: '';
 		};
 
+		// Get correct background color class of todo item
+		$scope.priorityTranslucentColorClass = function(priority) {
+			priority = parseInt(priority);
+			return priority === 1 ? 'bg-red-translucent'
+				   : priority === 2 ? 'bg-green-translucent'
+				   : priority === 3 ? 'bg-blue-translucent'
+				   : '';
+		};
+
 		/* * * END CONTROLLER FUNCTIONS * * */
 
 	}]);

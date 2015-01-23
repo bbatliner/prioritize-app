@@ -1,6 +1,6 @@
 .todo-item.ng-enter {
-	-webkit-transition: all 0.5s ease-out;
-	transition: all 0.5s ease-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
 	opacity: 0;
 }
 .todo-item.ng-enter.ng-enter-active {

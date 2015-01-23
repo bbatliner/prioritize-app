@@ -2,9 +2,11 @@
 
 <!-- todo categories nav tabs -->
 <ul id="categoryTabs" class="nav nav-tabs" style="margin-bottom: 10px">
-  <li class="active"><a href="" ng-click="changeCategory('')" data-toggle="tab">All</a></li>
-  <li ng-repeat="category in categoricalTodos.categories"><a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a></li>
-  <li><a href="" ng-click="newCategory()"><i class="glyphicon glyphicon-plus"></i></a></li>
+	<li class="active"><a href="" ng-click="changeCategory('')" data-toggle="tab">All</a></li>
+	<li ng-repeat="category in categoricalTodos.categories">
+		<a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a>
+	</li>
+	<li><a href="" ng-click="newCategory()"><i class="glyphicon glyphicon-plus"></i></a></li>
 </ul>
 <!-- end todo categories nav tabs -->
 
@@ -54,9 +56,9 @@
 			<div class="col-sm-2 no-padding">
 				<select class="form-control" ng-model="newTodoPriority">
 					<option value="" disabled selected class="hidden">Priority</option>
-					<option value="1">High</option>
-					<option value="2">Medium</option>
-					<option value="3">Low</option>
+					<option value="1" class="bg-red-translucent">High</option>
+					<option value="2" class="bg-green-translucent">Medium</option>
+					<option value="3" class="bg-blue-translucent">Low</option>
 				</select>
 			</div>
 			<!-- end priority dropdown -->
@@ -165,7 +167,7 @@
 		<!-- end trash can for item -->
 
 		<!-- todo item -->
-		<div class="form-control">
+		<div class="form-control" ng-class="priorityTranslucentColorClass(todo.priority)">
 
 			<!-- view todo -->
 			<div class="row" ng-hide="isEditing">
@@ -362,7 +364,7 @@
 					<!-- end priority badge -->
 
 					<!-- category badge, if viewing all todos -->
-					<span class="badge todo-badge category-badge pull-right" ng-show="currentCategory == ''">
+					<span class="badge todo-badge category-badge pull-right" ng-show="currentCategory == ''" style="background-color: #777">
 						{{todo.category.trunc(20)}}
 					</span>
 					<!-- end category badge -->

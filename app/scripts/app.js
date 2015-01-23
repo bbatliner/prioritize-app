@@ -16,6 +16,7 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
+    'ngDragDrop',
     'ui.date'
   ])
   .config(function ($routeProvider) {

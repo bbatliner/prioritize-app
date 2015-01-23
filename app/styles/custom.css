@@ -22,6 +22,24 @@ body {
 .bg-blue {
 	background-color: blue;
 }
+.bg-red-translucent {
+	background-color: rgba(255, 0, 0, 0.15);
+}
+.bg-green-translucent {
+	background-color: rgba(0, 200, 0, 0.15);
+}
+.bg-blue-translucent {
+	background-color: rgba(0, 0, 255, 0.15);
+}
+.bg-red-translucent:hover {
+	background-color: rgba(255, 0, 0, 0.20) !important;
+}
+.bg-green-translucent:hover {
+	background-color: rgba(0, 200, 0, 0.20) !important;
+}
+.bg-blue-translucent:hover {
+	background-color: rgba(0, 0, 255, 0.20) !important;
+}
 
 .no-padding {
 	padding: 0;
