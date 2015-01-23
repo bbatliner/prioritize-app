@@ -1,3 +1,10 @@
+/* Extra wide viewport */
+@media (min-width: 1000px) {
+	.container {
+		max-width: 950px;
+	}
+}
+
 /* Mobile specific styling */
 @media screen and (max-width: 767px) {
 	.header {
