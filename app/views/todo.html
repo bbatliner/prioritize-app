@@ -1,12 +1,14 @@
 <!-- NEW TODO ITEM INPUT -->
 
 <!-- todo categories nav tabs -->
-<ul id="categoryTabs" class="nav nav-tabs" style="margin-bottom: 10px">
-	<li class="active"><a href="" ng-click="changeCategory('')" data-toggle="tab">All</a></li>
-	<li ng-repeat="category in categoricalTodos.categories">
-		<a href="" ng-click="changeCategory(category.name)" data-toggle="tab">{{category.name}}</a>
-	</li>
-	<li><a href="" ng-click="newCategory()"><i class="glyphicon glyphicon-plus"></i></a></li>
+<ul id="allTabs" class="nav nav-tabs" style="margin-bottom: 10px">
+	<li class="active"><a href="" ng-click="changeCategory('')">All</a></li>
+	<li style="float: right"><a href="" ng-click="newCategory()"><i class="glyphicon glyphicon-plus"></i></a></li>
+	<ul id="categoryTabs" class="nav nav-tabs" ui-sortable="categorySortable" ng-model="categoricalTodos.categories" style="border-bottom: 0 transparent">
+		<li ng-repeat="category in categoricalTodos.categories" data-toggle="tab">
+			<a href="" ng-click="changeCategory(category.name)">{{category.name}}</a>
+		</li>
+	</ul>
 </ul>
 <!-- end todo categories nav tabs -->
 

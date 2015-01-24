@@ -18,11 +18,7 @@ angular.module('myTodoAngularApp')
 		// Save todo items in appropriate local storage
 		function saveTodos() {
 			if (supportsLocalStorage) {
-				// var compressedTodos = compressCategoricalTodos($scope.todos);
-				// var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
 				localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
-				// var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
-				// var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
 				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
 			}
 		}
@@ -45,51 +41,6 @@ angular.module('myTodoAngularApp')
 			}
 			return extractedTodos;
 		}
-
-		// // Compress a single array of todos (with categories properties) into organized categories
-		// // Quirky behavior: the category of the todo is left in the todo object, even though it is contained
-		// // in a `category` object with a name
-		// function compressCategoricalTodos(todos) {
-		// 	var compressedTodos = JSON.parse('{ "categories": [] }');
-		// 	var usedCategories = [];
-
-		// 	for (var i = 0; i < todos.length; i++) {
-		// 		var currentTodo = todos[i];
-		// 		var todoCategory = currentTodo.category;
-		// 		if ($.inArray(todoCategory, usedCategories) === -1) {
-		// 			usedCategories[usedCategories.length] = todoCategory;
-		// 			var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
-		// 			for (var j = 0; j < todos.length; j++) {
-		// 				var currentTodoToCheck = todos.slice()[j];
-		// 				if (currentTodoToCheck.category === todoCategory) {
-		// 					newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
-		// 				}
-		// 			}
-		// 			compressedTodos.categories[compressedTodos.categories.length] = angular.copy(newCategory);
-		// 		}
-		// 	}
-
-		// 	return compressedTodos;
-		// }
-
-		// // Take empty categories in the emptyCategories organized array and put them 
-		// // in the already-organized categoricalTodos array, but only if they don't exist already
-		// function mergeEmptyCategories(categoricalTodos, emptyCategories) {
-		// 	for (var i = 0; i < emptyCategories.categories.length; i++) {
-		// 		var currentCategory = emptyCategories.categories[i];
-		// 		var categoryExists = false;
-		// 		for (var j = 0; j < categoricalTodos.categories.length; j++) {
-		// 			if (currentCategory.name === categoricalTodos.categories[j].name) {
-		// 				categoryExists = true;
-		// 				break;
-		// 			}
-		// 		}
-		// 		if (!categoryExists) {
-		// 			categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
-		// 		}
-		// 	}
-		// 	return categoricalTodos;
-		// }
 
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
@@ -198,6 +149,17 @@ angular.module('myTodoAngularApp')
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();
 
+		// Create a custom ui-sortable thinger
+		$scope.categorySortable = {
+			axis: 'x',
+			tolerance: 'intersect',
+			distance: 10,
+			// Save todos when the user sorts their categories
+			stop: function() {
+				saveTodos();
+			}
+		};
+
 		/* * * END INITIALIZATION CODE * * */
 
 
@@ -247,7 +209,7 @@ angular.module('myTodoAngularApp')
 					$scope.$apply();
 
 					// Update the active tab in the UI
-					$('#categoryTabs li:last').prev().find('a').tab('show');
+					$('#categoryTabs li:last').find('a').tab('show');
 
 					// Save todos
 					saveTodos();
@@ -595,5 +557,18 @@ angular.module('myTodoAngularApp')
 		};
 
 		/* * * END CONTROLLER FUNCTIONS * * */
+
+		/* * * JQUERY NAV TAB CODE * * */
+		$('#allTabs a').click(function(e) {
+			if (e.target.firstChild !== null && e.target.firstChild.data !== null && e.target.firstChild.data !== undefined) {
+				$(this).parent('li').addClass('active');
+				$('#categoryTabs').find('.active').removeClass('active');
+			}
+		});
+		$('#categoryTabs').click(function() {
+			$('#allTabs').children('.active').removeClass('active');
+			$('#allTabs > li a').blur();
+		});
+		/* * * END JQUERY NAV TAB CODE * * */
 
 	}]);
