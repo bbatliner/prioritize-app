@@ -151,7 +151,6 @@ angular.module('myTodoAngularApp')
 
 		// Create a custom ui-sortable thinger
 		$scope.categorySortable = {
-			axis: 'x',
 			tolerance: 'intersect',
 			distance: 20,
 			// Save todos when the user sorts their categories
@@ -210,6 +209,8 @@ angular.module('myTodoAngularApp')
 
 					// Update the active tab in the UI
 					$('#categoryTabs li:last').find('a').tab('show');
+					$('#allTabs').children('.active').removeClass('active');
+					$('#allTabs > li a').blur();
 
 					// Save todos
 					saveTodos();
