@@ -153,7 +153,7 @@ angular.module('myTodoAngularApp')
 		$scope.categorySortable = {
 			axis: 'x',
 			tolerance: 'intersect',
-			distance: 10,
+			distance: 20,
 			// Save todos when the user sorts their categories
 			stop: function() {
 				saveTodos();
