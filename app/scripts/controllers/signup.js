@@ -20,7 +20,7 @@ angular.module('myTodoAngularApp')
 					noty({ type: 'success', text: 'Successfully signed up!', timeout: 1200 });
 				})
 				.error(function(data) {
-					noty({ type: 'error', text: data.error });
+					noty({ type: 'error', text: data.responseJSON.error, timeout: 1200 });
 				});
 		};
 	}]);
