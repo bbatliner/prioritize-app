@@ -22,7 +22,7 @@ userSchema.methods.hashPassword = function(password) {
 };
 
 // Validate password
-userSchema.methods.isValidPassword = function(password) {
+userSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.password);
 };
 

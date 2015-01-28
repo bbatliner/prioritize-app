@@ -188,6 +188,7 @@
     <script src="scripts/controllers/help.js"></script>
     <script src="scripts/controllers/todo.js"></script>
     <script src="scripts/controllers/signup.js"></script>
+    <script src="scripts/controllers/login.js"></script>
     <!-- endbuild -->
 
 
@@ -199,7 +200,9 @@
             $(window).bind('hashchange', function() {
                 // Remove any currently active classes from the nav bar
                 $('.navbar .active').removeClass('active');
-                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass("active");
+                // Add the active class to the tab with the same href as the current hash
+                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass('active');
+                // Special case for home page
                 if (window.location.hash === '#/') {
                     $('.navbar-brand').addClass('active');
                 }

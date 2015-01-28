@@ -3,13 +3,15 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', 'UA-57756529-1', 'auto');</script><!--[if lt IE 9]><script src="scripts/oldieshim.76f279db.js"></script><![endif]--><script src="scripts/vendor.b95a93ab.js"></script><script src="scripts/scripts.be92c6a1.js"></script><script>// When the hash changes (Angular serves pages based on the hash)
+      ga('create', 'UA-57756529-1', 'auto');</script><!--[if lt IE 9]><script src="scripts/oldieshim.76f279db.js"></script><![endif]--><script src="scripts/vendor.b95a93ab.js"></script><script src="scripts/scripts.07ce8551.js"></script><script>// When the hash changes (Angular serves pages based on the hash)
         // Adjust the active navbar component
         $(function() {
             $(window).bind('hashchange', function() {
                 // Remove any currently active classes from the nav bar
                 $('.navbar .active').removeClass('active');
-                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass("active");
+                // Add the active class to the tab with the same href as the current hash
+                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass('active');
+                // Special case for home page
                 if (window.location.hash === '#/') {
                     $('.navbar-brand').addClass('active');
                 }
