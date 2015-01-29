@@ -5,6 +5,7 @@ var validator      = require('validator');
 var LocalStrategy  = require('passport-local').Strategy;
 var User           = require(global.rootDir + '/app/models/user.js');
 
+
 module.exports = function(passport) {
 
 	passport.use('local-signup', new LocalStrategy({
