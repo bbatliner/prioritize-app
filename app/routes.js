@@ -41,6 +41,46 @@ module.exports = function(app, passport) {
 	app.post('/api/signup', passport.authenticate('local-signup'), function(req, res) {
 		res.send(req.user);
 	});
+
+	// Save user todos
+	app.post('/api/savetodos', auth, function(req, res) {
+		var todos = JSON.parse(req.body.todos);
+
+		// Validate todos
+		if (todos === undefined || todos === null || todos.length === 0) {
+			return res.status(400).json({ status: 400, error: 'Todos cannot be empty.' });
+		}
+		else if (todos.categories === undefined || todos.categories === null || todos.categories.length === 0) {
+			return res.status(400).json({ status: 400, error: 'Todos must have categories.' });
+		}
+		else {
+			for (var i = 0; i < todos.categories.length; i++) {
+				var currentCategory = todos.categories[i];
+				if (currentCategory.todos === undefined || currentCategory.todos === null) {
+					return res.status(400).json({ status: 400, error: 'Categories cannot be empty.' });
+				}
+			}
+		}
+
+		// Clean todos
+		for (var i = 0; i < todos.categories.length; i++) {
+			delete todos.categories[i].$$hashKey;
+		}
+
+		// Save todos to the logged-in user
+		User.findById(req.user.id, function(error, user) {
+			user.todos = todos;
+			user.save(function(err) {
+				if (err) {
+					console.log(err);
+				}
+				// if the todos didn't save, we can't do anything about it,
+				// so just log the error
+			});
+		});
+		
+		res.sendStatus(200);
+	})
 	
 	// Send feedback
 	app.post('/api/send-feedback', Mail.sendFeedback);

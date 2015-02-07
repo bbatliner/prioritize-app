@@ -26,8 +26,8 @@ app.use(cookieParser());
 // Auth/sessions
 app.use(session({ 
 	secret: process.env.SESSION_SECRET,
-	resave: false,
-	saveUninitialized: true
+	resave: false, // don't force session to save UNTIL it has actually changed
+	saveUninitialized: true // force an unmodified, new session to be saved
 }));
 app.use(passport.initialize());
 app.use(passport.session());

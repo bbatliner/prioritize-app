@@ -14,7 +14,6 @@ module.exports = function(passport) {
 		passReqToCallback: true
 	},
 	function(req, email, password, done) {
-
 		// Get extra information not passable through the callback, but available in the request
 		var firstName = req.body.firstName;
 		var lastName = req.body.lastName;
@@ -52,6 +51,7 @@ module.exports = function(passport) {
 				newUser.lastName = lastName;
 				newUser.email = email;
 				newUser.password = newUser.hashPassword(password);
+				newUser.role = 'user';
 
 				newUser.save(function(err) {
 					if (err) {
