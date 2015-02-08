@@ -17,14 +17,26 @@ angular.module('myTodoAngularApp')
 
 		// Save todo items in appropriate local storage
 		function saveTodos() {
-			if (supportsLocalStorage) {
-				// var compressedTodos = compressCategoricalTodos($scope.todos);
-				// var todosToSave = mergeEmptyCategories(compressedTodos, $scope.categoricalTodos);
-				localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
-				// var compressedDoneTodos = compressCategoricalTodos($scope.doneTodos);
-				// var doneTodosToSave = mergeEmptyCategories(compressedDoneTodos, $scope.doneCategoricalTodos);
-				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
-			}
+			// if (supportsLocalStorage) {
+			// 	localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
+			// 	localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
+			// }
+			var data = {
+				"todos": JSON.stringify($scope.categoricalTodos),
+				"doneTodos": JSON.stringify($scope.doneCategoricalTodos)
+			};
+			$.post('/api/todos', data)
+				.error(function(data) {
+					noty({
+						type: 'error',
+						text: 'Could not save todos. Click to try again.',
+						callback: {
+							onCloseClick: function() {
+								saveTodos();
+							}
+						},
+						timeout: 5000 });
+				});
 		}
 
 		// Extract todos in the nested categorical model to a single array
@@ -176,24 +188,45 @@ angular.module('myTodoAngularApp')
 		*/
 
 		// Load initial todos from appropriate source
-		if (supportsLocalStorage) {
-			if (localStorage.getItem('myTodos') !== null) {
-				$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
+		// if (supportsLocalStorage) {
+		// 	if (localStorage.getItem('myTodos') !== null) {
+		// 		$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
+		// 		$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
+		// 	}
+		// 	else {
+		// 		$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
+		// 		$scope.todos = [];
+		// 	}
+		// 	if (localStorage.getItem('myDoneTodos') !== null) {
+		// 		$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
+		// 		$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
+		// 	}
+		// 	else {
+		// 		$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
+		// 		$scope.doneTodos = [];
+		// 	}
+		// }
+		$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
+		$scope.todos = [];
+		$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
+		$scope.doneTodos = [];
+
+		$.get('/api/todos', function(data) {
+			var tempTodos = data;
+			if (tempTodos !== null && tempTodos !== undefined && tempTodos !== '') {
+				$scope.categoricalTodos = tempTodos;
 				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
+				$scope.$apply();
 			}
-			else {
-				$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
-				$scope.todos = [];
-			}
-			if (localStorage.getItem('myDoneTodos') !== null) {
-				$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
+		});
+		$.get('/api/doneTodos', function(data) {
+			var tempDoneTodos = data;
+			if (tempDoneTodos !== null && tempDoneTodos !== undefined && tempDoneTodos !== '') {
+				$scope.doneCategoricalTodos = tempDoneTodos;
 				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
+				$scope.$apply();
 			}
-			else {
-				$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
-				$scope.doneTodos = [];
-			}
-		}
+		});
 
 		// Set the baseline for the todo item IDs
 		$scope.currentMaxId = getCurrentMaxId();

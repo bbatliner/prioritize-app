@@ -12,7 +12,8 @@ var userSchema = mongoose.Schema({
 	lastName:        String,
 	email:           String,
 	password:        String,
-	todos:           Object
+	todos:           Object,
+	doneTodos:       Object
 });
 
 

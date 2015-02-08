@@ -1,21 +1,23 @@
 'use strict';
 
-var checkLoggedin = function($q, $timeout, $http, $location, $rootScope) {
+var checkLoggedin = function($q, $http, $location, $rootScope) {
 	// Initialize a new promise
 	var deferred = $q.defer();
 	// Make an AJAX call to check if the user is logged in 
-	$http.get('/api/loggedin').success( function(user) { 
+	$http.get('/api/loggedin').success(function(user) { 
 		// Authenticated 
 		if (user !== '0') {
-			$timeout(deferred.resolve, 0); 
+			deferred.resolve();
 		}
 		// Not Authenticated 
 		else { 
 			$rootScope.message = 'You need to log in.';
-			$timeout(function(){deferred.reject();}, 0);
+			deferred.reject();
 			$location.url('/login');
 		}
 	});
+
+	return deferred.promise;
 };
 
 /**
@@ -43,14 +45,14 @@ angular.module('myTodoAngularApp', [
 		})
 		.when('/todo-list', {
 			templateUrl: 'views/todo.html',
-			controller: 'TodoController'
+			controller: 'TodoController',
+			resolve: {
+				loggedin: checkLoggedin
+			}
 		})
 		.when('/about', {
 			templateUrl: 'views/about.html',
 			controller: 'AboutController',
-			resolve: {
-				loggedin: checkLoggedin
-			}
 		})
 		.when('/help', {
 			templateUrl: 'views/help.html',

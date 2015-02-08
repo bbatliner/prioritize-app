@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('LoginController', ['$scope', function ($scope) {
+	.controller('LoginController', ['$scope', '$location', '$timeout', function ($scope, $location, $timeout) {
 
 		$scope.email = '';
 		$scope.password = '';
@@ -13,12 +13,17 @@ angular.module('myTodoAngularApp')
 			};
 			$.post('/api/login', data)
 				.done(function(data) {
-					console.log(data);
-					noty({ type: 'success', text: 'Successfully logged in!', timeout: 1200 });
+					noty({ 
+						type: 'success',
+						text: 'Successfully logged in! Navigating to todo list...',
+						timeout: 1200,
+					});
+					$timeout(function() {
+						$location.path('/todo-list');
+					}, 1200);
 				})
 				.error(function(data) {
-					console.log(data);
-					noty({ type: 'error', text: data.responseJSON.error, timeout: 1200 });
+					noty({ type: 'error', text: data.responseText, timeout: 1200 });
 				});
 		};
 	}]);
