@@ -78,11 +78,11 @@ module.exports = function(passport) {
 			}
 			// If user not found, return
 			if (!user) {
-				return done('Wrong email.', false);
+				return done('Email is not associated with any accounts.', false);
 			}
 			// If password not valid, return
 			if (!user.validPassword(password)) {
-				return done('Wrong password.', false);
+				return done('Incorrect password.', false);
 			}
 
 			// Otherwise return the logged in user

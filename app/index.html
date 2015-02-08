@@ -77,6 +77,12 @@
                     <li><a href="#/help">Help</a></li>
                     <li><a href="#/about">About</a></li>
                 </ul>
+                <ul class="nav navbar-nav pull-right" ng-controller="LoginBarController">
+                    <li ng-if="user.firstName">{{ user.firstName }}</li>
+                    <li ng-if="user.firstName"><a onclick="logout()">Logout</a></li>
+                    <li ng-if="!user.firstName"><a href="#/login">Login</a></li>
+                    <li>{{ hello }}</li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -189,6 +195,7 @@
     <script src="scripts/controllers/todo.js"></script>
     <script src="scripts/controllers/signup.js"></script>
     <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/loginBar.js"></script>
     <!-- endbuild -->
 
 
@@ -206,11 +213,24 @@
                 if (window.location.hash === '#/') {
                     $('.navbar-brand').addClass('active');
                 }
+                // Special case for login/signup
+                if (window.location.hash === '#/signup') {
+                    $('nav a[href="#/login"]').parent('li').addClass('active');
+                }
                 // Click outside the nav bar so anything that has focus loses it
                 // $('.container').click();
             }).trigger('hashchange');
             // trigger once on page load
         });
+
+        function logout() {
+            $.post('/api/logout', function() {
+                noty({ type: 'success', text: 'Successfully logged out.' });
+                setTimeout(function() {
+                    window.location.reload();
+                }, 500);
+            });
+        }
 
         function sendFeedback() {
             var email = 

@@ -37,7 +37,12 @@ module.exports = function(app, passport) {
 
 	// Login (existing user)
 	app.post('/api/login', passport.authenticate('local-login'), function(req, res) {
-		res.send(req.user);
+		var returnableData = {
+			firstName: req.user.firstName,
+			lastName: req.user.lastName,
+			email: req.user.email
+		}
+		res.send(returnableData);
 	});
 
 	// Logout
@@ -48,7 +53,12 @@ module.exports = function(app, passport) {
 
 	// Signup (new user)
 	app.post('/api/signup', passport.authenticate('local-signup'), function(req, res) {
-		res.send(req.user);
+		var returnableData = {
+			firstName: req.user.firstName,
+			lastName: req.user.lastName,
+			email: req.user.email
+		}
+		res.send(returnableData);
 	});
 
 	// Save user todos
@@ -125,7 +135,17 @@ module.exports = function(app, passport) {
 
 	// Check login status
 	app.get('/api/loggedin', function(req, res) {
-		res.send(req.isAuthenticated() ? req.user : '0');
+		if (req.isAuthenticated()) {
+			var returnableData = {
+				firstName: req.user.firstName,
+				lastName: req.user.lastName,
+				email: req.user.email
+			}
+			res.send(returnableData);
+		}
+		else {
+			res.send('0');
+		}
 	});
 
 	// Get all users (admins only)

@@ -7,11 +7,12 @@ var checkLoggedin = function($q, $http, $location, $rootScope) {
 	$http.get('/api/loggedin').success(function(user) { 
 		// Authenticated 
 		if (user !== '0') {
+			$rootScope.user = user;
 			deferred.resolve();
 		}
 		// Not Authenticated 
 		else { 
-			$rootScope.message = 'You need to log in.';
+			// $rootScope.message = 'You need to log in.';
 			deferred.reject();
 			$location.url('/login');
 		}
