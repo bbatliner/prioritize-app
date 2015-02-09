@@ -78,10 +78,9 @@
                     <li><a href="#/about">About</a></li>
                 </ul>
                 <ul class="nav navbar-nav pull-right" ng-controller="LoginBarController">
-                    <li ng-if="user.firstName">{{ user.firstName }}</li>
-                    <li ng-if="user.firstName"><a onclick="logout()">Logout</a></li>
+                    <li ng-if="user.firstName"><a href="#/me">{{ user.firstName }}</a></li>
+                    <li ng-if="user.firstName"><a href onclick="logout()">Logout</a></li>
                     <li ng-if="!user.firstName"><a href="#/login">Login</a></li>
-                    <li>{{ hello }}</li>
                 </ul>
             </div>
         </div>
