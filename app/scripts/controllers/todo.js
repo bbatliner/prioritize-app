@@ -302,6 +302,8 @@ angular.module('myTodoAngularApp')
 						}
 
 						// Refresh the scope (and any ng-repeats!)
+						// Technically this is here because `bootbox` is an asynchronous operation,
+						// and Angular doesn't know that any scope variables changed.
 						$scope.$apply();
 
 						// Save todos
@@ -474,10 +476,12 @@ angular.module('myTodoAngularApp')
 			// Provide a parsed Data object for the form
 			myTodo.editDueDate = Date.parse(myTodo.todo.duedate);
 		};
+
 		// Don't save the edited todo 
 		$scope.cancelEditingTodo = function(myTodo) {
 			hideEditTodoUI(myTodo);
 		};
+
 		// Save the edited todo
 		$scope.saveEditingTodo = function(myTodo) {
 			// Save the edited description

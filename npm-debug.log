@@ -1,0 +1,83 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'mongoose@4.0.0' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'mongoose@4.0.0', null ]
+7 verbose cache add name=undefined spec="mongoose@4.0.0" args=["mongoose@4.0.0",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'mongoose@4.0.0',
+8 verbose parsed url   path: 'mongoose@4.0.0',
+8 verbose parsed url   href: 'mongoose@4.0.0' }
+9 verbose cache add name="mongoose" spec="4.0.0" args=["mongoose","4.0.0"]
+10 verbose parsed url { protocol: null,
+10 verbose parsed url   slashes: null,
+10 verbose parsed url   auth: null,
+10 verbose parsed url   host: null,
+10 verbose parsed url   port: null,
+10 verbose parsed url   hostname: null,
+10 verbose parsed url   hash: null,
+10 verbose parsed url   search: null,
+10 verbose parsed url   query: null,
+10 verbose parsed url   pathname: '4.0.0',
+10 verbose parsed url   path: '4.0.0',
+10 verbose parsed url   href: '4.0.0' }
+11 verbose addNamed [ 'mongoose', '4.0.0' ]
+12 verbose addNamed [ '4.0.0', '4.0.0' ]
+13 silly lockFile e6214c52-mongoose-4-0-0 mongoose@4.0.0
+14 verbose lock mongoose@4.0.0 C:\Users\student\AppData\Roaming\npm-cache\e6214c52-mongoose-4-0-0.lock
+15 verbose request where is /mongoose
+16 verbose request registry https://registry.npmjs.org/
+17 verbose request id 7365a04c999440ba
+18 verbose url raw /mongoose
+19 verbose url resolving [ 'https://registry.npmjs.org/', './mongoose' ]
+20 verbose url resolved https://registry.npmjs.org/mongoose
+21 verbose request where is https://registry.npmjs.org/mongoose
+22 info trying registry request attempt 1 at 15:28:03
+23 verbose etag "9EIZ25NPJT4XLBKS4NKTS1DEH"
+24 http GET https://registry.npmjs.org/mongoose
+25 http 304 https://registry.npmjs.org/mongoose
+26 silly registry.get cb [ 304,
+26 silly registry.get   { date: 'Tue, 10 Feb 2015 21:28:09 GMT',
+26 silly registry.get     server: 'Apache',
+26 silly registry.get     via: '1.1 varnish',
+26 silly registry.get     'last-modified': 'Tue, 10 Feb 2015 21:28:09 GMT',
+26 silly registry.get     'cache-control': 'max-age=60',
+26 silly registry.get     etag: '"9EIZ25NPJT4XLBKS4NKTS1DEH"',
+26 silly registry.get     age: '0',
+26 silly registry.get     'x-served-by': 'cache-ord1734-ORD',
+26 silly registry.get     'x-cache': 'HIT',
+26 silly registry.get     'x-cache-hits': '1',
+26 silly registry.get     'x-timer': 'S1423603689.679692,VS0,VE36',
+26 silly registry.get     vary: 'Accept',
+26 silly registry.get     'content-length': '0',
+26 silly registry.get     'keep-alive': 'timeout=10, max=50',
+26 silly registry.get     connection: 'Keep-Alive' } ]
+27 verbose etag https://registry.npmjs.org/mongoose from cache
+28 silly lockFile e6214c52-mongoose-4-0-0 mongoose@4.0.0
+29 silly lockFile e6214c52-mongoose-4-0-0 mongoose@4.0.0
+30 error Error: version not found: mongoose@4.0.0
+30 error     at C:\Program Files\nodejs\node_modules\npm\lib\cache\add-named.js:125:12
+30 error     at saved (C:\Program Files\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\get.js:167:7)
+30 error     at Object.oncomplete (fs.js:107:15)
+31 error If you need help, you may report this *entire* log,
+31 error including the npm and node versions, at:
+31 error     <http://github.com/npm/npm/issues>
+32 error System Windows_NT 6.1.7601
+33 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "mongoose@4.0.0"
+34 error cwd C:\Users\student\Desktop\Files\IMSA Academic\Prioritize\Dev\my-todo-angular-app
+35 error node -v v0.10.33
+36 error npm -v 1.4.28
+37 verbose exit [ 1, true ]

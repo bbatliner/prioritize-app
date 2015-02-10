@@ -23,7 +23,7 @@ angular.module('myTodoAngularApp')
 					}, 750);
 				})
 				.error(function(data) {
-					noty({ type: 'error', text: data.responseText, timeout: 1200 });
+					noty({ type: 'error', text: data, timeout: 1500 });
 				});
 		};
 	}]);
