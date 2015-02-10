@@ -77,6 +77,11 @@
                     <li><a href="#/help">Help</a></li>
                     <li><a href="#/about">About</a></li>
                 </ul>
+                <ul class="nav navbar-nav pull-right" ng-controller="LoginBarController">
+                    <li ng-if="user.firstName"><a href="#/me">{{ user.firstName }}</a></li>
+                    <li ng-if="user.firstName"><a href ng-click="logout()">Logout</a></li>
+                    <li ng-if="!user.firstName"><a href="#/login">Login</a></li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -189,6 +194,10 @@
     <script src="scripts/controllers/about.js"></script>
     <script src="scripts/controllers/help.js"></script>
     <script src="scripts/controllers/todo.js"></script>
+    <script src="scripts/controllers/signup.js"></script>
+    <script src="scripts/controllers/login.js"></script>
+    <script src="scripts/controllers/me.js"></script>
+    <script src="scripts/controllers/loginBar.js"></script>
     <!-- endbuild -->
 
 
@@ -200,10 +209,18 @@
             $(window).bind('hashchange', function() {
                 // Remove any currently active classes from the nav bar
                 $('.navbar .active').removeClass('active');
-                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass("active");
+                // Add the active class to the tab with the same href as the current hash
+                $('.nav a[href="' + window.location.hash + '"]').parent('li').addClass('active');
+                // Special case for home page
                 if (window.location.hash === '#/') {
                     $('.navbar-brand').addClass('active');
                 }
+                // Special case for login/signup
+                if (window.location.hash === '#/signup') {
+                    $('nav a[href="#/login"]').parent('li').addClass('active');
+                }
+                // Click outside the nav bar so anything that has focus loses it
+                // $('.container').click();
             }).trigger('hashchange');
             // trigger once on page load
         });
