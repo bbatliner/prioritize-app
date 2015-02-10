@@ -7,7 +7,7 @@ var db             = require(global.rootDir + '/config/mongoose.js');
 var User           = require(global.rootDir + '/app/models/user.js');
 
 
-// Define middleware auth function
+// Middleware auth function
 var auth = function(req, res, next) {
 	if (!req.isAuthenticated()) {
 		res.sendStatus(401);
@@ -17,6 +17,7 @@ var auth = function(req, res, next) {
 	}
 };
 
+// Middleware admin auth function
 var authAdmin = function(req, res, next) {
 	if (!req.isAuthenticated() || req.user.role !== 'admin') {
 		res.sendStatus(401);
@@ -73,7 +74,7 @@ module.exports = function(app, passport) {
 			return res.status(400).json({ status: 400, error: 'Todos cannot be empty.' });
 		}
 		else if (todos.categories === undefined || todos.categories === null || todos.categories.length === 0) {
-			return res.status(400).json({ status: 400, error: 'Todos must have categories.' });
+			// return res.status(400).json({ status: 400, error: 'Todos must have categories.' });
 		}
 		else {
 			for (var i = 0; i < todos.categories.length; i++) {
@@ -88,7 +89,7 @@ module.exports = function(app, passport) {
 			return res.status(400).json({ status: 400, error: 'Done todos cannot be empty.' });
 		}
 		else if (doneTodos.categories === undefined || doneTodos.categories === null || doneTodos.categories.length === 0) {
-			return res.status(400).json({ status: 400, error: 'Done todos must have categories.' });
+			// return res.status(400).json({ status: 400, error: 'Done todos must have categories.' });
 		}
 		else {
 			for (var i = 0; i < doneTodos.categories.length; i++) {

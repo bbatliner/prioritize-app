@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('LoginController', ['$scope', '$location', '$timeout', function ($scope, $location, $timeout) {
+	.controller('LoginController', ['$scope', '$http', '$location', '$timeout', function ($scope, $http, $location, $timeout) {
 
 		$scope.email = '';
 		$scope.password = '';
@@ -11,8 +11,8 @@ angular.module('myTodoAngularApp')
 				email: $scope.email,
 				password: $scope.password
 			};
-			$.post('/api/login', data)
-				.done(function(data) {
+			$http.post('/api/login', data)
+				.success(function(data) {
 					noty({ 
 						type: 'success',
 						text: 'Successfully logged in!',
