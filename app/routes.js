@@ -40,7 +40,8 @@ module.exports = function(app, passport) {
 		var returnableData = {
 			firstName: req.user.firstName,
 			lastName: req.user.lastName,
-			email: req.user.email
+			email: req.user.email,
+			createdAt: req.user.createdAt
 		}
 		res.send(returnableData);
 	});
@@ -56,7 +57,8 @@ module.exports = function(app, passport) {
 		var returnableData = {
 			firstName: req.user.firstName,
 			lastName: req.user.lastName,
-			email: req.user.email
+			email: req.user.email,
+			createdAt: req.user.createdAt
 		}
 		res.send(returnableData);
 	});
@@ -139,7 +141,8 @@ module.exports = function(app, passport) {
 			var returnableData = {
 				firstName: req.user.firstName,
 				lastName: req.user.lastName,
-				email: req.user.email
+				email: req.user.email,
+				createdAt: req.user.createdAt
 			}
 			res.send(returnableData);
 		}

@@ -1,7 +1,8 @@
 'use strict';
 
-var mongoose  = require('mongoose');
-var bcrypt    = require('bcrypt-nodejs');
+var mongoose    = require('mongoose');
+var timestamps  = require('mongoose-timestamp');
+var bcrypt      = require('bcrypt-nodejs');
 
 
 // Schema =============================
@@ -15,6 +16,8 @@ var userSchema = mongoose.Schema({
 	todos:           Object,
 	doneTodos:       Object
 });
+
+userSchema.plugin(timestamps);
 
 
 // Methods ============================

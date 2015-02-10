@@ -67,6 +67,13 @@ angular.module('myTodoAngularApp', [
 			templateUrl: 'views/login.html',
 			controller: 'LoginController'
 		})
+		.when('/me', {
+			templateUrl: 'views/me.html',
+			controller: 'MeController',
+			resolve: {
+				loggedin: checkLoggedin
+			}
+		})
 		.otherwise({
 			redirectTo: '/'
 		});

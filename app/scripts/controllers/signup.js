@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('SignupController', ['$scope', '$timeout', function ($scope, $timeout) {
+	.controller('SignupController', ['$scope', '$timeout', '$location', '$http', function ($scope, $timeout, $location, $http) {
 
 		$scope.firstName = '';
 		$scope.lastName = '';
@@ -15,15 +15,15 @@ angular.module('myTodoAngularApp')
 				email: $scope.email,
 				password: $scope.password
 			};
-			$.post('/api/signup', data)
-				.done(function(data) {
+			$http.post('/api/signup', data)
+				.success(function(data) {
 					noty({ type: 'success', text: 'Successfully signed up!', timeout: 1200 });
 					$timeout(function() {
 						$location.path('/todo-list');
 					}, 750);
 				})
 				.error(function(data) {
-					noty({ type: 'error', text: data, timeout: 1200 });
+					noty({ type: 'error', text: data.responseText , timeout: 1200 });
 				});
 		};
 	}]);

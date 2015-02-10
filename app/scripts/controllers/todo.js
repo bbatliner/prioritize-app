@@ -5,7 +5,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('TodoController', ['$scope', function ($scope) {
+	.controller('TodoController', ['$scope', '$http', function ($scope, $http) {
 
 		/* * * LOCAL FUNCTIONS * * */
 
@@ -15,17 +15,13 @@ angular.module('myTodoAngularApp')
 				return this.length>n ? this.substr(0,n-1)+'...' : this;
 			};
 
-		// Save todo items in appropriate local storage
+		// Post todos to api for saving
 		function saveTodos() {
-			// if (supportsLocalStorage) {
-			// 	localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
-			// 	localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
-			// }
 			var data = {
 				"todos": JSON.stringify($scope.categoricalTodos),
 				"doneTodos": JSON.stringify($scope.doneCategoricalTodos)
 			};
-			$.post('/api/todos', data)
+			$http.post('/api/todos', data)
 				.error(function(data) {
 					noty({
 						type: 'error',
@@ -57,51 +53,6 @@ angular.module('myTodoAngularApp')
 			}
 			return extractedTodos;
 		}
-
-		// // Compress a single array of todos (with categories properties) into organized categories
-		// // Quirky behavior: the category of the todo is left in the todo object, even though it is contained
-		// // in a `category` object with a name
-		// function compressCategoricalTodos(todos) {
-		// 	var compressedTodos = JSON.parse('{ "categories": [] }');
-		// 	var usedCategories = [];
-
-		// 	for (var i = 0; i < todos.length; i++) {
-		// 		var currentTodo = todos[i];
-		// 		var todoCategory = currentTodo.category;
-		// 		if ($.inArray(todoCategory, usedCategories) === -1) {
-		// 			usedCategories[usedCategories.length] = todoCategory;
-		// 			var newCategory = JSON.parse('{ "name": \"' + todoCategory + '\", "todos": [] }');
-		// 			for (var j = 0; j < todos.length; j++) {
-		// 				var currentTodoToCheck = todos.slice()[j];
-		// 				if (currentTodoToCheck.category === todoCategory) {
-		// 					newCategory.todos[newCategory.todos.length] = currentTodoToCheck;
-		// 				}
-		// 			}
-		// 			compressedTodos.categories[compressedTodos.categories.length] = angular.copy(newCategory);
-		// 		}
-		// 	}
-
-		// 	return compressedTodos;
-		// }
-
-		// // Take empty categories in the emptyCategories organized array and put them 
-		// // in the already-organized categoricalTodos array, but only if they don't exist already
-		// function mergeEmptyCategories(categoricalTodos, emptyCategories) {
-		// 	for (var i = 0; i < emptyCategories.categories.length; i++) {
-		// 		var currentCategory = emptyCategories.categories[i];
-		// 		var categoryExists = false;
-		// 		for (var j = 0; j < categoricalTodos.categories.length; j++) {
-		// 			if (currentCategory.name === categoricalTodos.categories[j].name) {
-		// 				categoryExists = true;
-		// 				break;
-		// 			}
-		// 		}
-		// 		if (!categoryExists) {
-		// 			categoricalTodos.categories[categoricalTodos.categories.length] = currentCategory;
-		// 		}
-		// 	}
-		// 	return categoricalTodos;
-		// }
 
 		// Hide the edit todo UI
 		function hideEditTodoUI(todo) {
@@ -159,13 +110,6 @@ angular.module('myTodoAngularApp')
 
 		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
 
-		var supportsLocalStorage = false;
-		// If browser supports localStorage, store todos there
-		// otherwise the default storage is cookies
-		if(typeof(Storage) !== 'undefined') {
-			supportsLocalStorage = true;
-		}
-
 		// Models for input fields for new todo item
 		$scope.newTodoText = '';
 		$scope.newTodoPriority = '';
@@ -187,49 +131,31 @@ angular.module('myTodoAngularApp')
 			}
 		*/
 
-		// Load initial todos from appropriate source
-		// if (supportsLocalStorage) {
-		// 	if (localStorage.getItem('myTodos') !== null) {
-		// 		$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
-		// 		$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
-		// 	}
-		// 	else {
-		// 		$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
-		// 		$scope.todos = [];
-		// 	}
-		// 	if (localStorage.getItem('myDoneTodos') !== null) {
-		// 		$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
-		// 		$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
-		// 	}
-		// 	else {
-		// 		$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
-		// 		$scope.doneTodos = [];
-		// 	}
-		// }
 		$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
 		$scope.todos = [];
 		$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
 		$scope.doneTodos = [];
 
-		$.get('/api/todos', function(data) {
-			var tempTodos = data;
-			if (tempTodos !== null && tempTodos !== undefined && tempTodos !== '') {
-				$scope.categoricalTodos = tempTodos;
-				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
-				$scope.$apply();
-			}
-		});
-		$.get('/api/doneTodos', function(data) {
-			var tempDoneTodos = data;
-			if (tempDoneTodos !== null && tempDoneTodos !== undefined && tempDoneTodos !== '') {
-				$scope.doneCategoricalTodos = tempDoneTodos;
-				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
-				$scope.$apply();
-			}
-		});
-
-		// Set the baseline for the todo item IDs
-		$scope.currentMaxId = getCurrentMaxId();
+		$http.get('/api/todos')
+			.success(function(data) {
+				var tempTodos = data;
+				if (tempTodos !== null && tempTodos !== undefined && tempTodos !== '') {
+					$scope.categoricalTodos = tempTodos;
+					$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
+				}
+				// Set the baseline for the todo item IDs
+				$scope.currentMaxId = getCurrentMaxId();
+			});
+		$http.get('/api/doneTodos')
+			.success(function(data) {
+				var tempDoneTodos = data;
+				if (tempDoneTodos !== null && tempDoneTodos !== undefined && tempDoneTodos !== '') {
+					$scope.doneCategoricalTodos = tempDoneTodos;
+					$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
+				}
+				// Set the baseline for the todo item IDs
+				$scope.currentMaxId = getCurrentMaxId();
+			});
 
 		/* * * END INITIALIZATION CODE * * */
 
