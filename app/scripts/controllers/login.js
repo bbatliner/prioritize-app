@@ -15,12 +15,12 @@ angular.module('myTodoAngularApp')
 				.done(function(data) {
 					noty({ 
 						type: 'success',
-						text: 'Successfully logged in! Navigating to todo list...',
-						timeout: 1200,
+						text: 'Successfully logged in!',
+						timeout: 1000,
 					});
 					$timeout(function() {
 						$location.path('/todo-list');
-					}, 1200);
+					}, 750);
 				})
 				.error(function(data) {
 					noty({ type: 'error', text: data.responseText, timeout: 1200 });

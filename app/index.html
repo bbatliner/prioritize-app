@@ -79,7 +79,7 @@
                 </ul>
                 <ul class="nav navbar-nav pull-right" ng-controller="LoginBarController">
                     <li ng-if="user.firstName"><a href="#/me">{{ user.firstName }}</a></li>
-                    <li ng-if="user.firstName"><a href onclick="logout()">Logout</a></li>
+                    <li ng-if="user.firstName"><a href ng-click="logout()">Logout</a></li>
                     <li ng-if="!user.firstName"><a href="#/login">Login</a></li>
                 </ul>
             </div>
@@ -221,15 +221,6 @@
             }).trigger('hashchange');
             // trigger once on page load
         });
-
-        function logout() {
-            $.post('/api/logout', function() {
-                noty({ type: 'success', text: 'Successfully logged out.' });
-                setTimeout(function() {
-                    window.location.reload();
-                }, 500);
-            });
-        }
 
         function sendFeedback() {
             var email = 

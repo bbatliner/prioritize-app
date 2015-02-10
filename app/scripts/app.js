@@ -12,7 +12,7 @@ var checkLoggedin = function($q, $http, $location, $rootScope) {
 		}
 		// Not Authenticated 
 		else { 
-			// $rootScope.message = 'You need to log in.';
+			$rootScope.user = false;
 			deferred.reject();
 			$location.url('/login');
 		}
