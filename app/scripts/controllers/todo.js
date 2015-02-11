@@ -312,7 +312,12 @@ angular.module('myTodoAngularApp')
 						saveTodos();
 
 						// Update the active tab in the UI
-						var nextTabAnchor = $('#categoryTabs li:eq(' + indexOfNextTabToShow + ')').find('a');
+						if (indexOfNextTabToShow === -1) {
+							var nextTabAnchor = $('#allTab').find('a');
+						}
+						else {
+							var nextTabAnchor = $('#categoryTabs li:eq(' + indexOfNextTabToShow + ')').find('a');
+						}
 						nextTabAnchor.tab('show');
 						nextTabAnchor.click();
 					}
