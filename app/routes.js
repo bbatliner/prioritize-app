@@ -71,31 +71,31 @@ module.exports = function(app, passport) {
 
 		// Validate todos
 		if (todos === undefined || todos === null || todos.length === 0) {
-			return res.status(400).json({ status: 400, error: 'Todos cannot be empty.' });
+			return res.status(400).json({ error: 'Todos cannot be empty.' });
 		}
 		else if (todos.categories === undefined || todos.categories === null || todos.categories.length === 0) {
-			// return res.status(400).json({ status: 400, error: 'Todos must have categories.' });
+			// return res.status(400).json({ error: 'Todos must have categories.' });
 		}
 		else {
 			for (var i = 0; i < todos.categories.length; i++) {
 				var currentCategory = todos.categories[i];
 				if (currentCategory.todos === undefined || currentCategory.todos === null) {
-					return res.status(400).json({ status: 400, error: 'Categories must have `todos`.' });
+					return res.status(400).json({ error: 'Categories must have `todos`.' });
 				}
 			}
 		}
 		// Validate done todos
 		if (doneTodos === undefined || doneTodos === null || doneTodos.length === 0) {
-			return res.status(400).json({ status: 400, error: 'Done todos cannot be empty.' });
+			return res.status(400).json({ error: 'Done todos cannot be empty.' });
 		}
 		else if (doneTodos.categories === undefined || doneTodos.categories === null || doneTodos.categories.length === 0) {
-			// return res.status(400).json({ status: 400, error: 'Done todos must have categories.' });
+			// return res.status(400).json({ error: 'Done todos must have categories.' });
 		}
 		else {
 			for (var i = 0; i < doneTodos.categories.length; i++) {
 				var currentCategory = doneTodos.categories[i];
 				if (currentCategory.todos === undefined || currentCategory.todos === null) {
-					return res.status(400).json({ status: 400, error: 'Done todo categories must have `todos`.' });
+					return res.status(400).json({ error: 'Done todo categories must have `todos`.' });
 				}
 			}
 		}
@@ -113,7 +113,7 @@ module.exports = function(app, passport) {
 		User.findById(req.user.id, function(error, user) {
 			if (error) {
 				console.log(error);
-				return res.sendStatus(500);
+				return res.status(500).json({ error: 'User does not exist.' });
 			}
 
 			user.todos = todos;
@@ -121,9 +121,8 @@ module.exports = function(app, passport) {
 			user.save(function(err) {
 				if (err) {
 					console.log(err);
+					return res.status(500).json({ error: 'Unable to save todos.' });
 				}
-				// if the todos didn't save, we can't do anything about it,
-				// so just log the error
 			});
 		});
 

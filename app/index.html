@@ -247,7 +247,7 @@
                     $('#feedbackModal').modal('hide');
                 })
                 .error(function(data) {                
-                    noty({ type: 'error', text: 'Error ' + data.responseJSON.status + ': ' + data.responseJSON.error, timeout: 1500 });
+                    noty({ type: 'error', text: data.responseJSON.error, timeout: 1500 });
                 })
                 .always(function() {
                     // Set the submit button back to its old content
