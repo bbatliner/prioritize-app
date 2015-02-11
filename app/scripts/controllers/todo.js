@@ -5,7 +5,7 @@
 'use strict';
 
 angular.module('myTodoAngularApp')
-	.controller('TodoController', ['$scope', function ($scope) {
+	.controller('TodoController', ['$scope', '$http', function ($scope, $http) {
 
 		/* * * LOCAL FUNCTIONS * * */
 
@@ -15,12 +15,24 @@ angular.module('myTodoAngularApp')
 				return this.length>n ? this.substr(0,n-1)+'...' : this;
 			};
 
-		// Save todo items in appropriate local storage
+		// Post todos to api for saving
 		function saveTodos() {
-			if (supportsLocalStorage) {
-				localStorage.setItem('myTodos', JSON.stringify($scope.categoricalTodos));
-				localStorage.setItem('myDoneTodos', JSON.stringify($scope.doneCategoricalTodos));
-			}
+			var data = {
+				"todos": JSON.stringify($scope.categoricalTodos),
+				"doneTodos": JSON.stringify($scope.doneCategoricalTodos)
+			};
+			$http.post('/api/todos', data)
+				.error(function(data) {
+					noty({
+						type: 'error',
+						text: 'Could not save todos. Click to try again.',
+						callback: {
+							onCloseClick: function() {
+								saveTodos();
+							}
+						},
+						timeout: 5000 });
+				});
 		}
 
 		// Extract todos in the nested categorical model to a single array
@@ -98,13 +110,6 @@ angular.module('myTodoAngularApp')
 
 		$scope.inputTypeDateSupported = window.Modernizr.inputtypes.date;
 
-		var supportsLocalStorage = false;
-		// If browser supports localStorage, store todos there
-		// otherwise the default storage is cookies
-		if(typeof(Storage) !== 'undefined') {
-			supportsLocalStorage = true;
-		}
-
 		// Models for input fields for new todo item
 		$scope.newTodoText = '';
 		$scope.newTodoPriority = '';
@@ -126,28 +131,31 @@ angular.module('myTodoAngularApp')
 			}
 		*/
 
-		// Load initial todos from appropriate source
-		if (supportsLocalStorage) {
-			if (localStorage.getItem('myTodos') !== null) {
-				$scope.categoricalTodos = JSON.parse(localStorage.getItem('myTodos'));
-				$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
-			}
-			else {
-				$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
-				$scope.todos = [];
-			}
-			if (localStorage.getItem('myDoneTodos') !== null) {
-				$scope.doneCategoricalTodos = JSON.parse(localStorage.getItem('myDoneTodos'));
-				$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
-			}
-			else {
-				$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
-				$scope.doneTodos = [];
-			}
-		}
+		$scope.categoricalTodos = JSON.parse('{ "categories": [] }');
+		$scope.todos = [];
+		$scope.doneCategoricalTodos = JSON.parse('{ "categories": [] }');
+		$scope.doneTodos = [];
 
-		// Set the baseline for the todo item IDs
-		$scope.currentMaxId = getCurrentMaxId();
+		$http.get('/api/todos')
+			.success(function(data) {
+				var tempTodos = data;
+				if (tempTodos !== null && tempTodos !== undefined && tempTodos !== '') {
+					$scope.categoricalTodos = tempTodos;
+					$scope.todos = extractCategoricalTodos($scope.categoricalTodos);
+				}
+				// Set the baseline for the todo item IDs
+				$scope.currentMaxId = getCurrentMaxId();
+			});
+		$http.get('/api/doneTodos')
+			.success(function(data) {
+				var tempDoneTodos = data;
+				if (tempDoneTodos !== null && tempDoneTodos !== undefined && tempDoneTodos !== '') {
+					$scope.doneCategoricalTodos = tempDoneTodos;
+					$scope.doneTodos = extractCategoricalTodos($scope.doneCategoricalTodos);
+				}
+				// Set the baseline for the todo item IDs
+				$scope.currentMaxId = getCurrentMaxId();
+			});
 
 		// Create a custom ui-sortable thinger
 		$scope.categorySortable = {
@@ -306,6 +314,8 @@ angular.module('myTodoAngularApp')
 						}
 
 						// Refresh the scope (and any ng-repeats!)
+						// Technically this is here because `bootbox` is an asynchronous operation,
+						// and Angular doesn't know that any scope variables changed.
 						$scope.$apply();
 
 						// Save todos
@@ -483,10 +493,12 @@ angular.module('myTodoAngularApp')
 			// Provide a parsed Data object for the form
 			myTodo.editDueDate = Date.parse(myTodo.todo.duedate);
 		};
+
 		// Don't save the edited todo 
 		$scope.cancelEditingTodo = function(myTodo) {
 			hideEditTodoUI(myTodo);
 		};
+
 		// Save the edited todo
 		$scope.saveEditingTodo = function(myTodo) {
 			// Save the edited description
